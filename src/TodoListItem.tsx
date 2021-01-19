@@ -1,6 +1,8 @@
 import React, { ChangeEvent } from "react";
 import { TaskType } from "./App";
 import { EditableSpan } from "./EditableSpan";
+import {Checkbox, IconButton} from "@material-ui/core";
+import {Delete} from "@material-ui/icons";
 
 type TodoListItemType = {
   id: string;
@@ -31,13 +33,11 @@ export const TodoListItem: React.FC<TodoListItemType> = (props) => {
 
   return (
     <li className={task.isDone ? "is-done" : ""}>
-      <input
-        onChange={onCheckboxChange}
-        type="checkbox"
-        checked={task.isDone}
-      />
+      <Checkbox onChange={onCheckboxChange} checked={task.isDone} color={"primary"}/>
       <EditableSpan title={task.title} changeTitle={changeTitle} />
-      <button onClick={removeTask}>X</button>
+      <IconButton onClick={removeTask}>
+        <Delete/>
+      </IconButton>
     </li>
   );
 };

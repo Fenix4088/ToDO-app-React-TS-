@@ -4,6 +4,7 @@ import { AddBox } from "@material-ui/icons";
 
 type AddItemFormType = {
   addItem: (title: string) => void;
+  placeholder?: string
 };
 
 export const AddItemForm = (props: AddItemFormType) => {
@@ -29,20 +30,19 @@ export const AddItemForm = (props: AddItemFormType) => {
   };
 
   return (
-    <div>
+    <div style={{ marginBottom: "20px" }}>
       <TextField
-          variant={"outlined"}
+        variant={"outlined"}
         value={title}
         onChange={onChangeHandler}
         onKeyPress={onKeyPressHandler}
         error={!!error}
         helperText={error}
-        label={"Enter task name..."}
+        label={props.placeholder ? props.placeholder : "Enter task name..."}
       />
       <IconButton onClick={addItem} color={"primary"}>
         <AddBox />
       </IconButton>
-      {/*{error && <div className={"error-message"}>{error}</div>}*/}
     </div>
   );
 };

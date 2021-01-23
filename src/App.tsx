@@ -10,7 +10,7 @@ import {
   Typography,
   Toolbar,
   Container,
-  Grid, Paper,
+  Grid, Paper, Box,
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 
@@ -157,8 +157,16 @@ function App() {
       </AppBar>
 
       <Container>
-        <Grid container style={{ padding: "10px" }}>
-          <AddItemForm addItem={addTodoList} />
+        <Grid
+          container
+          style={{ padding: "10px" }}
+          justify="center"
+          alignItems="center"
+        >
+          <AddItemForm
+            addItem={addTodoList}
+            placeholder={"Enter Todo List name..."}
+          />
         </Grid>
 
         <Grid container spacing={3}>
@@ -170,7 +178,7 @@ function App() {
 
             return (
               <Grid item spacing={3}>
-                <Paper elevation={5} style={{padding: "20px 10px"}}>
+                <Paper elevation={5} style={{ padding: "20px 10px" }}>
                   <TodoList
                     key={todoList.id}
                     id={todoList.id}

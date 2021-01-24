@@ -1,8 +1,9 @@
 import React, { ChangeEvent } from "react";
 import { TaskType } from "./App";
 import { EditableSpan } from "./EditableSpan";
-import {Checkbox, IconButton} from "@material-ui/core";
-import {Delete} from "@material-ui/icons";
+import { Box, Checkbox, IconButton } from "@material-ui/core";
+import { Delete } from "@material-ui/icons";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 type TodoListItemType = {
   id: string;
@@ -16,7 +17,17 @@ type TodoListItemType = {
   ) => void;
 };
 
+const useStyles = makeStyles({
+  listItem: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    maxWidth: "250px",
+  },
+});
+
 export const TodoListItem: React.FC<TodoListItemType> = (props) => {
+  const classes = useStyles();
   const { task } = props;
 
   const removeTask = () => {
@@ -32,11 +43,17 @@ export const TodoListItem: React.FC<TodoListItemType> = (props) => {
   };
 
   return (
-    <li className={task.isDone ? "is-done" : ""}>
-      <Checkbox onChange={onCheckboxChange} checked={task.isDone} color={"primary"}/>
-      <EditableSpan title={task.title} changeTitle={changeTitle} />
+    <li className={`${task.isDone ? "is-done" : ""} ${classes.listItem}`}>
+      <Box>
+        <Checkbox
+          onChange={onCheckboxChange}
+          checked={task.isDone}
+          color={"primary"}
+        />
+        <EditableSpan title={task.title} changeTitle={changeTitle} />
+      </Box>
       <IconButton onClick={removeTask}>
-        <Delete/>
+        <Delete />
       </IconButton>
     </li>
   );

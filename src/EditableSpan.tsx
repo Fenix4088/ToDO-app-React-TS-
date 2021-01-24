@@ -16,6 +16,7 @@ const useStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
     maxWidth: "70%",
+    overflowWrap: "anywhere",
   },
 });
 

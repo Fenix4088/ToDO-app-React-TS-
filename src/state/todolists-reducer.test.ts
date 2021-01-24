@@ -1,36 +1,78 @@
-import {StateT, userReducer} from "./user-reducer";
+import { v1 } from "uuid";
+import {
+  TodolistsReducerStateT,
+  todolistsReducer,
+  ChangeTodolistFilterAT,
+  ChangeTodolistTitleAT,
+  removeTodolistAC,
+  addTodolistAC,
+  changeTodolistTitleAC,
+  changeTodolistFilterAC,
+} from "./todolists-reducer";
+import { FilterValuesType } from "../App";
 
-let startState: StateT;
+let startState: TodolistsReducerStateT;
+const todoListId1 = v1();
+const todoListId2 = v1();
 
 beforeEach(function () {
-    startState = {
-        age: 20,
-        childrenCount: 2,
-        name: "Joe",
-    }
+  startState = [
+    {
+      id: todoListId1,
+      title: "What to learn",
+      filter: "all",
+    },
+    {
+      id: todoListId2,
+      title: "What to buy",
+      filter: "all",
+    },
+  ];
 });
 
-test("user reducer should increment only age", () => {
+test("todolist should be remove", () => {
+  const endState = todolistsReducer(startState, removeTodolistAC(todoListId1));
 
-    const endState = userReducer(startState, {type: "INCREMENT-AGE"});
-
-    expect(endState.age).toBe(21);
-    expect(endState.childrenCount).toBe(2);
-
+  expect(endState.length).toBe(1);
+  expect(endState[0].id).toBe(todoListId2);
 });
 
-test("user reducer should increment only childrenCount", () => {
+test("todolist should be added", () => {
+  const newTodoListTitle = "New Todolist";
 
-    const endState = userReducer(startState, {type: "INCREMENT-CHILDREN-COUNT"});
+  const endState = todolistsReducer(
+    startState,
+    addTodolistAC(newTodoListTitle)
+  );
 
-    expect(endState.age).toBe(20);
-    expect(endState.childrenCount).toBe(3);
+  expect(endState.length).toBe(3);
+  expect(endState[2].title).toBe(newTodoListTitle);
+  expect(endState[2].filter).toBe("all");
 });
 
-test("user reducer should change user name", () => {
-    const newName = "Viktor";
+test("todolist should changed its name", () => {
+  const newTodoListTitle = "New Todolist";
 
-    const endState = userReducer(startState, {type: "CHANGE-NAME", newName: newName});
+  const endState = todolistsReducer(
+    startState,
+    changeTodolistTitleAC(todoListId2, newTodoListTitle)
+  );
 
-    expect(endState.name).toBe(newName);
+  expect(endState[0].title).toBe("What to learn");
+  expect(endState[1].title).toBe(newTodoListTitle);
+  expect(endState.length).toBe(2);
+});
+
+test("todolist should changed filter name", () => {
+  const newFilter: FilterValuesType = "completed";
+
+  const endState = todolistsReducer(
+    startState,
+    changeTodolistFilterAC(todoListId2, newFilter)
+  );
+
+  expect(endState[0].filter).toBe("all");
+  expect(endState[1].filter).toBe(newFilter);
+  expect(endState.length).toBe(2);
+  expect(startState[1] !== endState[1]).toBe(true);
 });

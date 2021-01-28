@@ -1,6 +1,6 @@
 import { v1 } from "uuid";
 import {
-  TodolistsReducerStateT,
+  TodolistReducerStateT,
   todolistsReducer,
   ChangeTodolistFilterAT,
   ChangeTodolistTitleAT,
@@ -11,7 +11,7 @@ import {
 } from "./todolists-reducer";
 import { FilterValuesType } from "../App";
 
-let startState: TodolistsReducerStateT;
+let startState: TodolistReducerStateT;
 const todoListId1 = v1();
 const todoListId2 = v1();
 

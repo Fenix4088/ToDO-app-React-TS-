@@ -27,7 +27,7 @@ export type TodoListType = {
   title: string;
   filter: FilterValuesType;
 };
-type TaskStateTyp = {
+export type TaskStateTyp = {
   [key: string]: Array<TaskType>;
 };
 
@@ -99,14 +99,10 @@ function App() {
   ) {
     let tasksForTodoList = tasks[todoListId];
     if (todoFilterValue === "active") {
-      tasksForTodoList = tasks[todoListId].filter(
-        (task) => task.isDone === false
-      );
+      tasksForTodoList = tasks[todoListId].filter((task) => !task.isDone);
     }
     if (todoFilterValue === "completed") {
-      tasksForTodoList = tasks[todoListId].filter(
-        (task) => task.isDone === true
-      );
+      tasksForTodoList = tasks[todoListId].filter((task) => task.isDone);
     }
 
     return tasksForTodoList;

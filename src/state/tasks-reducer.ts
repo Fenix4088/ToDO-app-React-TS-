@@ -81,12 +81,12 @@ export const tasksReducer = (
       };
     }
     case "REMOVE-TODOLIST": {
-      const copyState = { ...state};
+      const copyState = { ...state };
       delete copyState[action.id];
       return copyState;
     }
     default:
-      throw new Error("Action in userReducer is not valid!");
+      return state;
   }
 };
 
@@ -107,7 +107,6 @@ export const addTaskAC = (title: string, todoListID: string): AddTaskT => {
     todoListID,
   };
 };
-
 export const changeTaskStatusAC = (
   taskId: string,
   isDone: boolean,
@@ -120,7 +119,6 @@ export const changeTaskStatusAC = (
     isDone,
   };
 };
-
 export const changeTaskTitleAC = (
   taskId: string,
   title: string,

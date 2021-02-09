@@ -1,6 +1,11 @@
 import { TaskStateTyp, TaskType } from "../App";
 import { v1 } from "uuid";
-import {AddTodolistAT, RemoveTodolistAT, todoListID1, todoListID2} from "./todolists-reducer";
+import {
+  AddTodolistAT,
+  RemoveTodolistAT,
+  todoListID1,
+  todoListID2,
+} from "./todolists-reducer";
 
 type ActionsT =
   | RemoveTaskT
@@ -35,7 +40,16 @@ export type ChangeTaskTitleT = {
   todoListID: string;
 };
 
-const initialState: TaskStateTyp = {
+export type TaskT = {
+  id: string;
+  title: string;
+  isDone: boolean;
+};
+export type TaskStateT = {
+  [key: string]: Array<TaskT>;
+};
+
+const initialState: TaskStateT = {
   [todoListID1]: [
     { id: v1(), title: "HTML", isDone: true },
     { id: v1(), title: "CSS", isDone: false },
@@ -47,7 +61,7 @@ const initialState: TaskStateTyp = {
     { id: v1(), title: "bread", isDone: false },
     { id: v1(), title: "milk", isDone: true },
   ],
-}
+};
 
 export const tasksReducer = (
   state: TaskStateTyp = initialState,

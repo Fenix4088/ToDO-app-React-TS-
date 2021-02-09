@@ -1,7 +1,6 @@
-import React, { useReducer, useState } from "react";
+import React from "react";
 import "./App.css";
 import { TodoList } from "./TodoList";
-import { v1 } from "uuid";
 import { AddItemForm } from "./AddItemFrom";
 import {
   AppBar,
@@ -12,47 +11,32 @@ import {
   Container,
   Grid,
   Paper,
-  Box,
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import {
   addTodolistAC,
   changeTodolistFilterAC,
   changeTodolistTitleAC,
+  FilterValuesT,
   removeTodolistAC,
-  todolistsReducer
+  TodoListT,
 } from "./state/todolists-reducer";
 import {
   addTaskAC,
   changeTaskStatusAC,
   changeTaskTitleAC,
   removeTaskAC,
-  tasksReducer,
+  TaskStateT,
 } from "./state/tasks-reducer";
-import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateT} from "./state/store";
-
-export type TaskT = {
-  id: string;
-  title: string;
-  isDone: boolean;
-};
-export type FilterValuesT = "all" | "active" | "completed";
-export type TodoListT = {
-  id: string;
-  title: string;
-  filter: FilterValuesT;
-};
-export type TaskStateT = {
-  [key: string]: Array<TaskT>;
-};
+import { useDispatch, useSelector } from "react-redux";
+import { AppRootStateT } from "./state/store";
 
 function AppWithRedux() {
-
   const dispatch = useDispatch();
-  const todoLists = useSelector<AppRootStateT, Array<TodoListT>>(state => state.todoLists);
-  const tasks = useSelector<AppRootStateT, TaskStateT>(state => state.tasks);
-
+  const todoLists = useSelector<AppRootStateT, Array<TodoListT>>(
+    (state) => state.todoLists
+  );
+  const tasks = useSelector<AppRootStateT, TaskStateT>((state) => state.tasks);
 
   function removeTask(taskId: string, todoListID: string) {
     dispatch(removeTaskAC(taskId, todoListID));

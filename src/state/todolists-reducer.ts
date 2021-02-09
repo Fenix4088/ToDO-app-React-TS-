@@ -34,7 +34,14 @@ export const todoListID2 = v1();
 const initialState: TodolistReducerStateT = [
   { id: todoListID1, title: "What to learn?", filter: "all" },
   { id: todoListID2, title: "What to bue?", filter: "all" },
-]
+];
+
+export type FilterValuesT = "all" | "active" | "completed";
+export type TodoListT = {
+  id: string;
+  title: string;
+  filter: FilterValuesT;
+};
 
 export const todolistsReducer = (
   state: TodolistReducerStateT = initialState,

@@ -2,8 +2,6 @@ import { v1 } from "uuid";
 import {
   TodolistReducerStateT,
   todolistsReducer,
-  ChangeTodolistFilterAT,
-  ChangeTodolistTitleAT,
   removeTodolistAC,
   addTodolistAC,
   changeTodolistTitleAC,

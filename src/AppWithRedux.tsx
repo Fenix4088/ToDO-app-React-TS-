@@ -36,7 +36,8 @@ function AppWithRedux() {
   const todoLists = useSelector<AppRootStateT, Array<TodoListT>>(
     (state) => state.todoLists
   );
-  const tasks = useSelector<AppRootStateT, TaskStateT>((state) => state.tasks);
+
+  // const tasks = useSelector<AppRootStateT, TaskStateT>((state) => state.tasks);
 
   function removeTask(taskId: string, todoListID: string) {
     dispatch(removeTaskAC(taskId, todoListID));
@@ -58,20 +59,7 @@ function AppWithRedux() {
     dispatch(removeTodolistAC(todoListId));
   }
 
-  function filterTasksForTodoList(
-    todoFilterValue: FilterValuesT,
-    todoListId: string
-  ) {
-    let tasksForTodoList = tasks[todoListId];
-    if (todoFilterValue === "active") {
-      tasksForTodoList = tasks[todoListId].filter((task) => !task.isDone);
-    }
-    if (todoFilterValue === "completed") {
-      tasksForTodoList = tasks[todoListId].filter((task) => task.isDone);
-    }
 
-    return tasksForTodoList;
-  }
 
   function addTodoList(todoListTitle: string): void {
     dispatch(addTodolistAC(todoListTitle));
@@ -116,10 +104,6 @@ function AppWithRedux() {
 
         <Grid container spacing={3}>
           {todoLists.map((todoList) => {
-            const tasksForTodoList = filterTasksForTodoList(
-              todoList.filter,
-              todoList.id
-            );
 
             return (
               <Grid item spacing={3}>
@@ -129,7 +113,6 @@ function AppWithRedux() {
                     id={todoList.id}
                     filter={todoList.filter}
                     title={todoList.title}
-                    tasks={tasksForTodoList}
                     addTask={addTask}
                     removeTask={removeTask}
                     changeFilter={changeFilter}

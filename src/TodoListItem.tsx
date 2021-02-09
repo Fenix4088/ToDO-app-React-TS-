@@ -1,13 +1,13 @@
 import React, { ChangeEvent } from "react";
-import { TaskType } from "./App";
 import { EditableSpan } from "./EditableSpan";
 import { Box, Checkbox, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import {TaskT} from "./state/tasks-reducer";
 
 type TodoListItemType = {
   id: string;
-  task: TaskType;
+  task: TaskT;
   removeTask: (taskId: string, id: string) => void;
   changeStatus: (taskId: string, isDone: boolean, id: string) => void;
   changeTaskTitle: (

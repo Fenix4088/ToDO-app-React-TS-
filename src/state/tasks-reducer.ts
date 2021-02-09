@@ -1,4 +1,3 @@
-import { TaskStateTyp, TaskType } from "../App";
 import { v1 } from "uuid";
 import {
   AddTodolistAT,
@@ -64,9 +63,9 @@ const initialState: TaskStateT = {
 };
 
 export const tasksReducer = (
-  state: TaskStateTyp = initialState,
+  state: TaskStateT = initialState,
   action: ActionsT
-): TaskStateTyp => {
+): TaskStateT => {
   switch (action.type) {
     case "REMOVE-TASK": {
       let copyState = { ...state };
@@ -76,7 +75,7 @@ export const tasksReducer = (
       return copyState;
     }
     case "ADD-TASK": {
-      const task: TaskType = {
+      const task: TaskT = {
         id: v1(),
         title: action.title,
         isDone: false,

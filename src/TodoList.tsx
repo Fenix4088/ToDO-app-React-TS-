@@ -1,5 +1,4 @@
 import React, { ChangeEvent, KeyboardEvent, useState } from "react";
-import { FilterValuesType, TaskType } from "./App";
 import { TodoListItem } from "./TodoListItem";
 import { AddItemForm } from "./AddItemFrom";
 import { EditableSpan } from "./EditableSpan";
@@ -7,15 +6,18 @@ import { IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import s from "./Common.module.scss";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateT} from "./state/store";
+import {TaskStateT, TaskT} from "./state/tasks-reducer";
+import {FilterValuesT, TodoListT} from "./state/todolists-reducer";
 
-type TodoListType = {
+type TodoListPropsType = {
   id: string;
   title: string;
-  filter: FilterValuesType;
-  tasks: Array<TaskType>;
+  filter: FilterValuesT;
   addTask: (title: string, id: string) => void;
   removeTask: (taskId: string, id: string) => void;
-  changeFilter: (filterVal: FilterValuesType, id: string) => void;
+  changeFilter: (filterVal: FilterValuesT, id: string) => void;
   changeStatus: (taskId: string, isDone: boolean, id: string) => void;
   removeTodoList: (todoListId: string) => void;
   changeTaskTitle: (
@@ -26,7 +28,26 @@ type TodoListType = {
   changeTodoListTitle: (newTitle: string, todoListID: string) => void;
 };
 
-export function TodoList(props: TodoListType) {
+export function TodoList(props: TodoListPropsType) {
+  const tasks = useSelector<AppRootStateT, Array<TaskT>>((state) => state.tasks[props.id]);
+  const dispatch = useDispatch();
+
+  function filterTasksForTodoList(
+      todoFilterValue: FilterValuesT
+  ):Array<TaskT> {
+    let tasksForTodoList = tasks;
+    if (todoFilterValue === "active") {
+      tasksForTodoList = tasks.filter((task) => !task.isDone);
+    }
+    if (todoFilterValue === "completed") {
+      tasksForTodoList = tasks.filter((task) => task.isDone);
+    }
+
+    return tasksForTodoList;
+  }
+
+  const filteredTasks = filterTasksForTodoList(props.filter);
+
   const addTask = (title: string): void => {
     props.addTask(title, props.id);
   };
@@ -84,7 +105,7 @@ export function TodoList(props: TodoListType) {
       </div>
 
       <ul>
-        {props.tasks.map((task) => (
+        {filteredTasks.map((task) => (
           <TodoListItem
             key={task.id}
             id={props.id}

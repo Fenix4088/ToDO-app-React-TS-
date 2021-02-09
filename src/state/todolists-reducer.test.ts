@@ -46,8 +46,8 @@ test("todolist should be added", () => {
   );
 
   expect(endState.length).toBe(3);
-  expect(endState[2].title).toBe(newTodoListTitle);
-  expect(endState[2].filter).toBe("all");
+  expect(endState[0].title).toBe(newTodoListTitle);
+  expect(endState[0].filter).toBe("all");
 });
 
 test("todolist should changed its name", () => {
@@ -55,7 +55,7 @@ test("todolist should changed its name", () => {
 
   const endState = todolistsReducer(
     startState,
-    changeTodolistTitleAC(todoListId2, newTodoListTitle)
+    changeTodolistTitleAC(newTodoListTitle, todoListId2)
   );
 
   expect(endState[0].title).toBe("What to learn");
@@ -68,7 +68,7 @@ test("todolist should changed filter name", () => {
 
   const endState = todolistsReducer(
     startState,
-    changeTodolistFilterAC(todoListId2, newFilter)
+    changeTodolistFilterAC(newFilter, todoListId2)
   );
 
   expect(endState[0].filter).toBe("all");

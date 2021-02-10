@@ -4,7 +4,7 @@ import { AddBox } from "@material-ui/icons";
 
 type AddItemFormType = {
   addItem: (title: string) => void;
-  placeholder?: string
+  placeholder?: string;
 };
 
 export const AddItemForm = (props: AddItemFormType) => {

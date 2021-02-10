@@ -5,9 +5,8 @@ import {
   removeTodolistAC,
   addTodolistAC,
   changeTodolistTitleAC,
-  changeTodolistFilterAC,
+  changeTodolistFilterAC, FilterValuesT,
 } from "./todolists-reducer";
-import { FilterValuesType } from "../App";
 
 let startState: TodolistReducerStateT;
 const todoListId1 = v1();
@@ -62,7 +61,7 @@ test("todolist should changed its name", () => {
 });
 
 test("todolist should changed filter name", () => {
-  const newFilter: FilterValuesType = "completed";
+  const newFilter: FilterValuesT = "completed";
 
   const endState = todolistsReducer(
     startState,

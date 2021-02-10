@@ -37,44 +37,16 @@ function AppWithRedux() {
     (state) => state.todoLists
   );
 
-  // const tasks = useSelector<AppRootStateT, TaskStateT>((state) => state.tasks);
-
-  function removeTask(taskId: string, todoListID: string) {
-    dispatch(removeTaskAC(taskId, todoListID));
-  }
-
   function changeFilter(filterVal: FilterValuesT, todoListID: string) {
     dispatch(changeTodolistFilterAC(filterVal, todoListID));
-  }
-
-  function addTask(title: string, todoListID: string) {
-    dispatch(addTaskAC(title, todoListID));
-  }
-
-  function changeStatus(taskId: string, isDone: boolean, todoListID: string) {
-    dispatch(changeTaskStatusAC(taskId, isDone, todoListID));
   }
 
   function removeTodoList(todoListId: string): void {
     dispatch(removeTodolistAC(todoListId));
   }
 
-
-
   function addTodoList(todoListTitle: string): void {
     dispatch(addTodolistAC(todoListTitle));
-  }
-
-  function changeTaskTitle(
-    taskId: string,
-    newTitle: string,
-    todoListID: string
-  ) {
-    dispatch(changeTaskTitleAC(taskId, newTitle, todoListID));
-  }
-
-  function changeTodoListTitle(newTitle: string, todoListID: string): void {
-    dispatch(changeTodolistTitleAC(newTitle, todoListID));
   }
 
   return (
@@ -104,22 +76,16 @@ function AppWithRedux() {
 
         <Grid container spacing={3}>
           {todoLists.map((todoList) => {
-
             return (
-              <Grid item spacing={3}>
+              <Grid item spacing={3} key={todoList.id}>
                 <Paper elevation={5} style={{ padding: "20px 10px" }}>
                   <TodoList
                     key={todoList.id}
                     id={todoList.id}
                     filter={todoList.filter}
                     title={todoList.title}
-                    addTask={addTask}
-                    removeTask={removeTask}
                     changeFilter={changeFilter}
-                    changeStatus={changeStatus}
                     removeTodoList={removeTodoList}
-                    changeTaskTitle={changeTaskTitle}
-                    changeTodoListTitle={changeTodoListTitle}
                   />
                 </Paper>
               </Grid>

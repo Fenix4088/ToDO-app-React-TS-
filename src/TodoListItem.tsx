@@ -3,18 +3,17 @@ import { EditableSpan } from "./EditableSpan";
 import { Box, Checkbox, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {TaskT} from "./state/tasks-reducer";
+import {
+  changeTaskStatusAC,
+  changeTaskTitleAC,
+  removeTaskAC,
+  TaskT,
+} from "./state/tasks-reducer";
+import { useDispatch } from "react-redux";
 
 type TodoListItemType = {
   id: string;
   task: TaskT;
-  removeTask: (taskId: string, id: string) => void;
-  changeStatus: (taskId: string, isDone: boolean, id: string) => void;
-  changeTaskTitle: (
-    taskId: string,
-    newTitle: string,
-    todoListID: string
-  ) => void;
 };
 
 const useStyles = makeStyles({
@@ -27,26 +26,27 @@ const useStyles = makeStyles({
 });
 
 export const TodoListItem: React.FC<TodoListItemType> = (props) => {
+  const dispatch = useDispatch();
   const classes = useStyles();
   const { task } = props;
 
   const removeTask = () => {
-    props.removeTask(task.id, props.id);
+    dispatch(removeTaskAC(task.id, props.id));
   };
-  const onCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
     const { checked } = e.currentTarget;
-    props.changeStatus(task.id, checked, props.id);
+    dispatch(changeTaskStatusAC(task.id, checked, props.id));
   };
 
   const changeTitle = (newTitle: string): void => {
-    props.changeTaskTitle(task.id, newTitle, props.id);
+    dispatch(changeTaskTitleAC(task.id, newTitle, props.id));
   };
 
   return (
     <li className={`${task.isDone ? "is-done" : ""} ${classes.listItem}`}>
       <Box>
         <Checkbox
-          onChange={onCheckboxChange}
+          onChange={changeTaskStatus}
           checked={task.isDone}
           color={"primary"}
         />

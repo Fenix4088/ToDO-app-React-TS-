@@ -6,10 +6,7 @@ import {
   tasksReducer,
   TaskStateT,
 } from "./tasks-reducer";
-import {
-  addTodolistAC,
-  removeTodolistAC,
-} from "./todolists-reducer";
+import { addTodolistAC, removeTodolistAC } from "./todolists-reducer";
 import { v1 } from "uuid";
 
 let startState: TaskStateT;
@@ -17,7 +14,6 @@ const todoListId1 = v1();
 const todoListId2 = v1();
 
 beforeEach(function () {
-
   startState = {
     [todoListId1]: [
       { id: "1", title: "CSS", isDone: false },
@@ -63,8 +59,6 @@ test("correct task should be added to correct array", () => {
 });
 
 test("status of specified task should be changed", () => {
-
-
   const action = changeTaskStatusAC("2", false, todoListId2);
 
   const endState = tasksReducer(startState, action);

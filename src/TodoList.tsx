@@ -65,6 +65,11 @@ export function TodoList(props: TodoListPropsType) {
     dispatch(changeTodolistTitleAC(newTitle, todoList.id));
   };
 
+  const showNoTasksMessage = (filterName: string):JSX.Element => {
+    filterName = filterName === "all" ? "any" : filterName;
+    return <span className={s.noTasksMessage}>You have no {filterName} tasks</span>
+  }
+
   return (
     <div>
       <h3>
@@ -105,9 +110,9 @@ export function TodoList(props: TodoListPropsType) {
       </div>
 
       <ul>
-        {filteredTasks.map((task) => (
+        {filteredTasks.length ? filteredTasks.map((task) => (
           <TodoListItem key={task.id} id={props.id} task={task} />
-        ))}
+        )): showNoTasksMessage(todoList.filter)}
       </ul>
     </div>
   );

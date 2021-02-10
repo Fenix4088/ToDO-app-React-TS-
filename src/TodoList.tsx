@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from "react";
+import React from "react";
 import { TodoListItem } from "./TodoListItem";
 import { AddItemForm } from "./AddItemFrom";
 import { EditableSpan } from "./EditableSpan";
@@ -8,11 +8,10 @@ import Button from "@material-ui/core/Button";
 import s from "./Common.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./state/store";
-import { addTaskAC, TaskStateT, TaskT } from "./state/tasks-reducer";
+import { addTaskAC, TaskT } from "./state/tasks-reducer";
 import {
   changeTodolistTitleAC,
   FilterValuesT,
-  TodoListT,
 } from "./state/todolists-reducer";
 
 type TodoListPropsType = {

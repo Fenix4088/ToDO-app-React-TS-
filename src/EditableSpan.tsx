@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { TextField } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
@@ -20,7 +20,8 @@ const useStyles = makeStyles({
   },
 });
 
-export const EditableSpan = (props: EditableSpanPropsType) => {
+export const EditableSpan = React.memo((props: EditableSpanPropsType) => {
+  console.log("Editable SPAN")
   const classes = useStyles();
 
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -47,4 +48,4 @@ export const EditableSpan = (props: EditableSpanPropsType) => {
       {props.title}
     </span>
   );
-};
+});

@@ -1,10 +1,5 @@
 import { v1 } from "uuid";
-import {
-  AddTodolistAT,
-  RemoveTodolistAT,
-  todoListID1,
-  todoListID2,
-} from "./todolists-reducer";
+import { AddTodolistAT, RemoveTodolistAT } from "./todolists-reducer";
 
 type ActionsT =
   | RemoveTaskT
@@ -49,17 +44,17 @@ export type TaskStateT = {
 };
 
 const initialState: TaskStateT = {
-  [todoListID1]: [
-    { id: v1(), title: "HTML", isDone: true },
-    { id: v1(), title: "CSS", isDone: false },
-    { id: v1(), title: "JS", isDone: false },
-    { id: v1(), title: "React", isDone: true },
-  ],
-  [todoListID2]: [
-    { id: v1(), title: "book", isDone: true },
-    { id: v1(), title: "bread", isDone: false },
-    { id: v1(), title: "milk", isDone: true },
-  ],
+  /*  [todoListID1]: [
+          { id: v1(), title: "HTML", isDone: true },
+          { id: v1(), title: "CSS", isDone: false },
+          { id: v1(), title: "JS", isDone: false },
+          { id: v1(), title: "React", isDone: true },
+        ],
+        [todoListID2]: [
+          { id: v1(), title: "book", isDone: true },
+          { id: v1(), title: "bread", isDone: false },
+          { id: v1(), title: "milk", isDone: true },
+        ],*/
 };
 
 export const tasksReducer = (

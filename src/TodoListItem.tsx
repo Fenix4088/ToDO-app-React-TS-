@@ -25,7 +25,8 @@ const useStyles = makeStyles({
   },
 });
 
-export const TodoListItem: React.FC<TodoListItemType> = (props) => {
+export const TodoListItem: React.FC<TodoListItemType> = React.memo((props) => {
+  console.log("TodoListItem called", props.task.title);
   const dispatch = useDispatch();
   const classes = useStyles();
   const { task } = props;
@@ -57,4 +58,4 @@ export const TodoListItem: React.FC<TodoListItemType> = (props) => {
       </IconButton>
     </li>
   );
-};
+});

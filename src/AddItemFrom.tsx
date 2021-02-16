@@ -7,7 +7,9 @@ type AddItemFormType = {
   placeholder?: string;
 };
 
-export const AddItemForm = (props: AddItemFormType) => {
+export const AddItemForm = React.memo((props: AddItemFormType) => {
+  console.log("AddItemForm is called");
+
   const [title, setTitle] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
@@ -22,7 +24,7 @@ export const AddItemForm = (props: AddItemFormType) => {
     setTitle("");
   };
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setError("");
+    if (error) setError("");
     setTitle(e.currentTarget.value);
   };
   const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -45,4 +47,4 @@ export const AddItemForm = (props: AddItemFormType) => {
       </IconButton>
     </div>
   );
-};
+});

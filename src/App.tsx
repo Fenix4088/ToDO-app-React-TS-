@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import "./App.css";
 import { TodoList } from "./TodoList";
 import { AddItemForm } from "./AddItemFrom";
@@ -19,14 +19,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./state/store";
 
 function App() {
+  console.log("App is called");
   const dispatch = useDispatch();
   const todoLists = useSelector<AppRootStateT, Array<TodoListT>>(
     (state) => state.todoLists
   );
 
-  function addTodoList(todoListTitle: string): void {
-    dispatch(addTodolistAC(todoListTitle));
-  }
+  const addTodoList = useCallback(
+    (todoListTitle: string): void => {
+      dispatch(addTodolistAC(todoListTitle));
+    },
+    [dispatch]
+  );
 
   return (
     <div className="App">
@@ -56,7 +60,7 @@ function App() {
         <Grid container spacing={3}>
           {todoLists.map((todoList) => {
             return (
-              <Grid item spacing={3} key={todoList.id}>
+              <Grid item key={todoList.id}>
                 <Paper elevation={5} style={{ padding: "20px 10px" }}>
                   <TodoList key={todoList.id} id={todoList.id} />
                 </Paper>

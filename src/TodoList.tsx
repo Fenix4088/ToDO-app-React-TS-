@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { TodoListItem } from "./TodoListItem";
 import { AddItemForm } from "./AddItemFrom";
 import { EditableSpan } from "./EditableSpan";
@@ -21,7 +21,7 @@ type TodoListPropsType = {
   id: string;
 };
 
-export function TodoList(props: TodoListPropsType) {
+export const TodoList = React.memo((props: TodoListPropsType) => {
   const todoList = useSelector<AppRootStateT, TodoListT>(
     (state) => state.todoLists.filter((tl) => props.id === tl.id)[0]
   );
@@ -29,6 +29,7 @@ export function TodoList(props: TodoListPropsType) {
     (state) => state.tasks[props.id]
   );
   const dispatch = useDispatch();
+  console.log("TodoList is called", todoList.title);
 
   function filterTasksForTodoList(
     todoFilterValue: FilterValuesT
@@ -46,29 +47,37 @@ export function TodoList(props: TodoListPropsType) {
 
   const filteredTasks = filterTasksForTodoList(todoList.filter);
 
-  const addTask = (title: string) => {
-    dispatch(addTaskAC(title, todoList.id));
-  };
-  const onAllClickHandler = () => {
+  const addTask = useCallback(
+    (title: string) => {
+      dispatch(addTaskAC(title, todoList.id));
+    },
+    [dispatch, todoList.id]
+  );
+  const onAllClickHandler = useCallback(() => {
     dispatch(changeTodolistFilterAC("all", todoList.id));
-  };
-  const onActiveClickHandler = () => {
+  }, [dispatch, todoList.id]);
+  const onActiveClickHandler = useCallback(() => {
     dispatch(changeTodolistFilterAC("active", todoList.id));
-  };
-  const onCompletedClickHandler = () => {
+  }, [dispatch, todoList.id]);
+  const onCompletedClickHandler = useCallback(() => {
     dispatch(changeTodolistFilterAC("completed", todoList.id));
-  };
-  const removeTodoList = (): void => {
+  }, [dispatch, todoList.id]);
+  const removeTodoList = useCallback((): void => {
     dispatch(removeTodolistAC(todoList.id));
-  };
-  const changeTodoListTitle = (newTitle: string) => {
-    dispatch(changeTodolistTitleAC(newTitle, todoList.id));
-  };
+  }, [dispatch, todoList.id]);
+  const changeTodoListTitle = useCallback(
+    (newTitle: string) => {
+      dispatch(changeTodolistTitleAC(newTitle, todoList.id));
+    },
+    [dispatch, todoList.id]
+  );
 
-  const showNoTasksMessage = (filterName: string):JSX.Element => {
+  const showNoTasksMessage = (filterName: string): JSX.Element => {
     filterName = filterName === "all" ? "any" : filterName;
-    return <span className={s.noTasksMessage}>You have no {filterName} tasks</span>
-  }
+    return (
+      <span className={s.noTasksMessage}>You have no {filterName} tasks</span>
+    );
+  };
 
   return (
     <div>
@@ -110,10 +119,12 @@ export function TodoList(props: TodoListPropsType) {
       </div>
 
       <ul>
-        {filteredTasks.length ? filteredTasks.map((task) => (
-          <TodoListItem key={task.id} id={props.id} task={task} />
-        )): showNoTasksMessage(todoList.filter)}
+        {filteredTasks.length
+          ? filteredTasks.map((task) => (
+              <TodoListItem key={task.id} id={props.id} task={task} />
+            ))
+          : showNoTasksMessage(todoList.filter)}
       </ul>
     </div>
   );
-}
+});

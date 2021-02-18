@@ -19,7 +19,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./state/store";
 
 function App() {
-  console.log("App is called");
   const dispatch = useDispatch();
   const todoLists = useSelector<AppRootStateT, Array<TodoListT>>(
     (state) => state.todoLists
@@ -62,7 +61,7 @@ function App() {
             return (
               <Grid item key={todoList.id}>
                 <Paper elevation={5} style={{ padding: "20px 10px" }}>
-                  <TodoList key={todoList.id} id={todoList.id} />
+                  <TodoList key={todoList.id} todoListId={todoList.id} />
                 </Paper>
               </Grid>
             );

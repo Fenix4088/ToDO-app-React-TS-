@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useCallback } from "react";
 import { EditableSpan } from "./EditableSpan";
 import { Box, Checkbox, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
@@ -12,7 +12,7 @@ import {
 import { useDispatch } from "react-redux";
 
 type TodoListItemType = {
-  id: string;
+  todoListId: string;
   task: TaskT;
 };
 
@@ -26,22 +26,28 @@ const useStyles = makeStyles({
 });
 
 export const TodoListItem: React.FC<TodoListItemType> = React.memo((props) => {
-  console.log("TodoListItem called", props.task.title);
   const dispatch = useDispatch();
   const classes = useStyles();
-  const { task } = props;
+  const { task, todoListId } = props;
 
-  const removeTask = () => {
-    dispatch(removeTaskAC(task.id, props.id));
-  };
-  const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
-    const { checked } = e.currentTarget;
-    dispatch(changeTaskStatusAC(task.id, checked, props.id));
-  };
+  const removeTask = useCallback(() => {
+    dispatch(removeTaskAC(task.id, todoListId));
+  }, [dispatch, todoListId, task.id]);
 
-  const changeTitle = (newTitle: string): void => {
-    dispatch(changeTaskTitleAC(task.id, newTitle, props.id));
-  };
+  const changeTaskStatus = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const { checked } = e.currentTarget;
+      dispatch(changeTaskStatusAC(task.id, checked, todoListId));
+    },
+    [dispatch, todoListId, task.id]
+  );
+
+  const changeTitle = useCallback(
+    (newTitle: string): void => {
+      dispatch(changeTaskTitleAC(task.id, newTitle, todoListId));
+    },
+    [dispatch, todoListId, task.id]
+  );
 
   return (
     <li className={`${task.isDone ? "is-done" : ""} ${classes.listItem}`}>
@@ -51,7 +57,7 @@ export const TodoListItem: React.FC<TodoListItemType> = React.memo((props) => {
           checked={task.isDone}
           color={"primary"}
         />
-        <EditableSpan title={task.title} changeTitle={changeTitle} />
+        <EditableSpan taskTitle={task.title} changeTitle={changeTitle} />
       </Box>
       <IconButton onClick={removeTask}>
         <Delete />

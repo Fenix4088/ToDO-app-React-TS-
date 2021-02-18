@@ -1,9 +1,9 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useCallback, useState } from "react";
 import { TextField } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 type EditableSpanPropsType = {
-  title: string;
+  taskTitle: string;
   changeTitle: (newTitle: string) => void;
 };
 
@@ -21,31 +21,35 @@ const useStyles = makeStyles({
 });
 
 export const EditableSpan = React.memo((props: EditableSpanPropsType) => {
-  console.log("Editable SPAN")
+  const { changeTitle, taskTitle } = props;
   const classes = useStyles();
 
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>(props.title);
+  const [title, setTitle] = useState<string>(taskTitle);
 
-  const onEditMode = (): void => setEditMode(true);
-  const offEditMode = (): void => {
+  const onEditMode = () => setEditMode(true);
+
+  const offEditMode = useCallback(() => {
     setEditMode(false);
-    if (title.trim()) props.changeTitle(title.trim());
-  };
-  const changeTitle = (e: ChangeEvent<HTMLInputElement>): void =>
-    setTitle(e.currentTarget.value);
+    if (title.trim()) changeTitle(title.trim());
+  }, [title, changeTitle]);
+
+  const onChangeTitle = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setTitle(e.currentTarget.value),
+    []
+  );
 
   return editMode ? (
     <TextField
       className={classes.input}
       value={title}
       onBlur={offEditMode}
-      onChange={changeTitle}
+      onChange={onChangeTitle}
       autoFocus
     />
   ) : (
     <span onDoubleClick={onEditMode} className={classes.editableSpan}>
-      {props.title}
+      {taskTitle}
     </span>
   );
 });

@@ -11,7 +11,7 @@ import {
 } from "./state/tasks-reducer";
 import { useDispatch } from "react-redux";
 
-type TodoListItemType = {
+export type TodoListItemType = {
   todoListId: string;
   task: TaskT;
 };

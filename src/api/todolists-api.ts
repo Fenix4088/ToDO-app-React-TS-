@@ -7,7 +7,7 @@ export type TodolistT = {
   order: number;
 };
 
-type ResponseT<D> = {
+type ResponseT<D = {}> = {
   resultCode: number;
   messages: Array<string>;
   data: D;
@@ -16,7 +16,6 @@ type ResponseT<D> = {
 export type TaskT = {
   description: string;
   title: string;
-  completed: boolean;
   status: number;
   priority: number;
   startDate: string;
@@ -32,6 +31,15 @@ type GetTasksResponse = {
   totalCount: number;
   items: Array<TaskT>;
 };
+
+export type UpdateTaskT = {
+  title: string
+  description: string
+  status: number
+  priority: number
+  startDate: string
+  deadline: string
+}
 
 const settings = {
   withCredentials: true,
@@ -55,18 +63,21 @@ export const todolistsAPI = {
     });
   },
   deleteTodolist(userId: string) {
-    return instance.delete<ResponseT<{}>>(`todo-lists/${userId}`);
+    return instance.delete<ResponseT>(`todo-lists/${userId}`);
   },
   updateTodolist(userId: string, title: string) {
-    return instance.put<ResponseT<{}>>(`todo-lists/${userId}`, {
+    return instance.put<ResponseT>(`todo-lists/${userId}`, {
       title,
     });
   },
 
   getTasks(todoListId: string) {
-    return axios.get<GetTasksResponse>(
-      `https://social-network.samuraijs.com/api/1.1/todo-lists/${todoListId}/tasks`,
-      settings
+    return instance.get<GetTasksResponse>(`todo-lists/${todoListId}/tasks`);
+  },
+
+  deleteTask(todoListId: string, taskId: string) {
+    return instance.delete<ResponseT>(
+      `todo-lists/${todoListId}/tasks${taskId}`
     );
   },
 };

@@ -82,7 +82,11 @@ export const todolistsAPI = {
 
   deleteTask(todoListId: string, taskId: string) {
     return instance.delete<ResponseT>(
-      `todo-lists/${todoListId}/tasks${taskId}`
+      `todo-lists/${todoListId}/tasks/${taskId}`
     );
   },
+
+  updateTask() {
+
+  }
 };

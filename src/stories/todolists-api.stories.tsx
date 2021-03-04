@@ -22,7 +22,6 @@ export const CreateTodolist = () => {
             }, []);*/
 
   const onCreateTodoList = (): void => {
-    console.log(todoListTitle);
     todolistsAPI
       .createTodolist(todoListTitle)
       .then((res) => setState(res.data));
@@ -193,13 +192,47 @@ export const CreateTask = () => {
 
 export const DeleteTask = () => {
   const [state, setState] = useState<any>(null);
-  useEffect(() => {
+    const [todoListId, setTodoListId] = useState<string>("");
+    const [taskId, setTaskId] = useState<string>("");
+/*  useEffect(() => {
     const todolistId = "d0f69b77-67f3-4481-ad56-589d628f5436";
     const taskId = "d0f69b77-67f3-4481-ad56-589d628f5436";
     todolistsAPI
       .deleteTask(todolistId, taskId)
       .then((resp) => setState(resp.data));
-  }, []);
+  }, []);*/
 
-  return <div> {JSON.stringify(state)}</div>;
+
+    const onInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        const { input } = e.currentTarget.dataset;
+        const { value } = e.currentTarget;
+        input === "todoId" ? setTodoListId(value) : setTaskId(value);
+    };
+
+    const onCreateTask = (): void => {
+        todolistsAPI.deleteTask(todoListId, taskId).then((resp) => setState(resp.data));
+        setTodoListId("");
+        setTaskId("")
+    };
+
+    return (
+        <>
+            <input
+                data-input={"todoId"}
+                type="text"
+                value={todoListId}
+                placeholder={"Enter TodoList ID..."}
+                onChange={onInputChange}
+            />
+            <input
+                data-input={"taskId"}
+                type="text"
+                value={taskId}
+                placeholder={"Enter task ID..."}
+                onChange={onInputChange}
+            />
+            <button onClick={onCreateTask}>Create task</button>
+            <div> {JSON.stringify(state)}</div>
+        </>
+    );
 };

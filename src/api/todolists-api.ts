@@ -62,11 +62,11 @@ export const todolistsAPI = {
       title,
     });
   },
-  deleteTodolist(userId: string) {
-    return instance.delete<ResponseT>(`todo-lists/${userId}`);
+  deleteTodolist(todoListId: string) {
+    return instance.delete<ResponseT>(`todo-lists/${todoListId}`);
   },
-  updateTodolist(userId: string, title: string) {
-    return instance.put<ResponseT>(`todo-lists/${userId}`, {
+  updateTodolist(todoListId: string, title: string) {
+    return instance.put<ResponseT>(`todo-lists/${todoListId}`, {
       title,
     });
   },

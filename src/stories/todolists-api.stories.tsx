@@ -236,3 +236,62 @@ export const DeleteTask = () => {
         </>
     );
 };
+
+export const UpdateTask = () => {
+  const [state, setState] = useState<any>(null);
+    const [todoListId, setTodoListId] = useState<string>("");
+    const [taskId, setTaskId] = useState<string>("");
+    const [taskTitle, setTaskTitle] = useState<string>("");
+
+    const onInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        const { input } = e.currentTarget.dataset;
+        const { value } = e.currentTarget;
+        switch(input) {
+            case "todoId":
+                setTodoListId(value);
+                break;
+            case "taskId":
+                setTaskId(value);
+                break
+            case "taskTitle":
+                setTaskTitle(value);
+                break;
+        }
+    };
+
+    const onCreateTask = (): void => {
+        todolistsAPI.updateTask(todoListId, taskId, taskTitle).then((resp) => setState(resp.data));
+        setTodoListId("");
+        setTaskId("");
+        setTaskTitle("");
+    };
+
+    return (
+        <>
+            <input
+                data-input={"todoId"}
+                type="text"
+                value={todoListId}
+                placeholder={"Enter TodoList ID..."}
+                onChange={onInputChange}
+            />
+            <input
+                data-input={"taskId"}
+                type="text"
+                value={taskId}
+                placeholder={"Enter task ID..."}
+                onChange={onInputChange}
+            />
+
+            <input
+                data-input={"taskTitle"}
+                type="text"
+                value={taskTitle}
+                placeholder={"Enter task Title..."}
+                onChange={onInputChange}
+            />
+            <button onClick={onCreateTask}>Update task</button>
+            <div> {JSON.stringify(state)}</div>
+        </>
+    );
+};

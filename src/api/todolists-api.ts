@@ -86,7 +86,15 @@ export const todolistsAPI = {
     );
   },
 
-  updateTask() {
-
+  updateTask(todoListId: string, taskId: string, title: string) {
+      return instance.put(`todo-lists/${todoListId}/tasks/${taskId}`, {
+        title,
+        description: "desc",
+        completed: false,
+        status: 1,
+        priority: 1,
+        startDate: "",
+        deadline: "",
+      })
   }
 };

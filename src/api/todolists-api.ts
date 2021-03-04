@@ -33,13 +33,13 @@ type GetTasksResponse = {
 };
 
 export type UpdateTaskT = {
-  title: string
-  description: string
-  status: number
-  priority: number
-  startDate: string
-  deadline: string
-}
+  title: string;
+  description: string;
+  status: number;
+  priority: number;
+  startDate: string;
+  deadline: string;
+};
 
 const settings = {
   withCredentials: true,
@@ -73,6 +73,11 @@ export const todolistsAPI = {
 
   getTasks(todoListId: string) {
     return instance.get<GetTasksResponse>(`todo-lists/${todoListId}/tasks`);
+  },
+
+  createTask(todolistId: string, taskTitle: string) {
+    return instance
+      .post(`todo-lists/${todolistId}/tasks`, {title: taskTitle});
   },
 
   deleteTask(todoListId: string, taskId: string) {

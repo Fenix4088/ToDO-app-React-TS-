@@ -54,17 +54,21 @@ const instance = axios.create({
 });
 
 export const todolistsAPI = {
+
   getTodolists() {
     return instance.get<Array<TodolistT>>("todo-lists");
   },
+
   createTodolist(title: string) {
     return instance.post<ResponseT<{ item: TodolistT }>>("todo-lists", {
       title,
     });
   },
+
   deleteTodolist(todoListId: string) {
     return instance.delete<ResponseT>(`todo-lists/${todoListId}`);
   },
+
   updateTodolist(todoListId: string, title: string) {
     return instance.put<ResponseT>(`todo-lists/${todoListId}`, {
       title,
@@ -77,7 +81,7 @@ export const todolistsAPI = {
 
   createTask(todolistId: string, taskTitle: string) {
     return instance
-      .post(`todo-lists/${todolistId}/tasks`, {title: taskTitle});
+      .post<GetTasksResponse>(`todo-lists/${todolistId}/tasks`, {title: taskTitle});
   },
 
   deleteTask(todoListId: string, taskId: string) {
@@ -87,7 +91,7 @@ export const todolistsAPI = {
   },
 
   updateTask(todoListId: string, taskId: string, title: string) {
-      return instance.put(`todo-lists/${todoListId}/tasks/${taskId}`, {
+      return instance.put<ResponseT<TaskT>>(`todo-lists/${todoListId}/tasks/${taskId}`, {
         title,
         description: "desc",
         completed: false,

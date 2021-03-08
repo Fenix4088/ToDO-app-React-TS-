@@ -1,6 +1,13 @@
 import { v1 } from "uuid";
+import {TodolistT} from "../api/todolists-api";
 
-export type TodolistReducerStateT = Array<TodoListT>;
+export type FilterValuesT = "all" | "active" | "completed";
+
+export type TodolistDomainT = TodolistT & {
+  filter: FilterValuesT
+}
+
+export type TodolistReducerStateT = Array<TodolistDomainT>;
 
 type ActionsT =
   | RemoveTodolistAT
@@ -30,17 +37,7 @@ export type ChangeTodolistFilterAT = {
 
 export const todoListID1 = v1();
 export const todoListID2 = v1();
-const initialState: TodolistReducerStateT = [
-/*  { id: todoListID1, title: "What to learn?", filter: "all" },
-  { id: todoListID2, title: "What to bue?", filter: "all" },*/
-];
-
-export type FilterValuesT = "all" | "active" | "completed";
-export type TodoListT = {
-  id: string;
-  title: string;
-  filter: FilterValuesT;
-};
+const initialState: TodolistReducerStateT = [];
 
 export const todolistsReducer = (
   state: TodolistReducerStateT = initialState,
@@ -51,7 +48,13 @@ export const todolistsReducer = (
       return state.filter((tl) => tl.id !== action.id);
     case "ADD-TODOLIST":
       return [
-        { id: action.todolistId, title: action.title, filter: "all" },
+        {
+          id: action.todolistId,
+          title: action.title,
+          filter: "all",
+          addedDate: "",
+          order: 1
+        },
         ...state,
       ];
     case "CHANGE-TODOLIST-TITLE":

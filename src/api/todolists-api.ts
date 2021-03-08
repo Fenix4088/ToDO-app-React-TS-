@@ -13,11 +13,25 @@ type ResponseT<D = {}> = {
   data: D;
 };
 
+export enum TaskStatuses {
+  New = 0,
+  InProgress = 1,
+  Completed = 2,
+  Draft = 3
+}
+
+export enum TaskPriorities {
+  Low = 0,
+  Middle = 1,
+  High = 2,
+  Later = 3
+}
+
 export type TaskT = {
   description: string;
   title: string;
-  status: number;
-  priority: number;
+  status: TaskStatuses;
+  priority: TaskPriorities;
   startDate: string;
   deadline: string;
   id: string;
@@ -30,15 +44,6 @@ type GetTasksResponse = {
   error: string | null;
   totalCount: number;
   items: Array<TaskT>;
-};
-
-export type UpdateTaskT = {
-  title: string;
-  description: string;
-  status: number;
-  priority: number;
-  startDate: string;
-  deadline: string;
 };
 
 const settings = {
@@ -54,7 +59,6 @@ const instance = axios.create({
 });
 
 export const todolistsAPI = {
-
   getTodolists() {
     return instance.get<Array<TodolistT>>("todo-lists");
   },
@@ -80,8 +84,9 @@ export const todolistsAPI = {
   },
 
   createTask(todolistId: string, taskTitle: string) {
-    return instance
-      .post<GetTasksResponse>(`todo-lists/${todolistId}/tasks`, {title: taskTitle});
+    return instance.post<GetTasksResponse>(`todo-lists/${todolistId}/tasks`, {
+      title: taskTitle,
+    });
   },
 
   deleteTask(todoListId: string, taskId: string) {
@@ -91,7 +96,9 @@ export const todolistsAPI = {
   },
 
   updateTask(todoListId: string, taskId: string, title: string) {
-      return instance.put<ResponseT<TaskT>>(`todo-lists/${todoListId}/tasks/${taskId}`, {
+    return instance.put<ResponseT<TaskT>>(
+      `todo-lists/${todoListId}/tasks/${taskId}`,
+      {
         title,
         description: "desc",
         completed: false,
@@ -99,6 +106,7 @@ export const todolistsAPI = {
         priority: 1,
         startDate: "",
         deadline: "",
-      })
-  }
+      }
+    );
+  },
 };

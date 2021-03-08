@@ -1,5 +1,6 @@
 import { v1 } from "uuid";
 import { AddTodolistAT, RemoveTodolistAT } from "./todolists-reducer";
+import { TaskPriorities, TaskStatuses, TaskT } from "../api/todolists-api";
 
 type ActionsT =
   | RemoveTaskT
@@ -34,33 +35,23 @@ export type ChangeTaskTitleT = {
   todoListID: string;
 };
 
-export type TaskT = {
+/*export type TaskT = {
   id: string;
   title: string;
   isDone: boolean;
-};
+};*/
 export type TaskStateT = {
   [key: string]: Array<TaskT>;
 };
 
-const initialState: TaskStateT = {
-  /*  [todoListID1]: [
-          { id: v1(), title: "HTML", isDone: true },
-          { id: v1(), title: "CSS", isDone: false },
-          { id: v1(), title: "JS", isDone: false },
-          { id: v1(), title: "React", isDone: true },
-        ],
-        [todoListID2]: [
-          { id: v1(), title: "book", isDone: true },
-          { id: v1(), title: "bread", isDone: false },
-          { id: v1(), title: "milk", isDone: true },
-        ],*/
-};
+const initialState: TaskStateT = {};
 
 export const tasksReducer = (
   state: TaskStateT = initialState,
   action: ActionsT
 ): TaskStateT => {
+  // debugger;
+
   switch (action.type) {
     case "REMOVE-TASK": {
       let copyState = { ...state };
@@ -73,7 +64,14 @@ export const tasksReducer = (
       const task: TaskT = {
         id: v1(),
         title: action.title,
-        isDone: false,
+        status: TaskStatuses.New,
+        description: "",
+        priority: TaskPriorities.Low,
+        startDate: "",
+        deadline: "",
+        order: 1,
+        addedDate: "",
+        todoListId: action.todoListID,
       };
       return {
         ...state,
@@ -81,10 +79,14 @@ export const tasksReducer = (
       };
     }
     case "CHANGE-TASK-STATUS": {
+      const isStatus = action.isDone
+        ? TaskStatuses.Completed
+        : TaskStatuses.New;
+
       return {
         ...state,
         [action.todoListID]: state[action.todoListID].map((t) =>
-          t.id === action.taskId ? { ...t, isDone: action.isDone } : t
+          t.id === action.taskId ? { ...t, status: isStatus } : t
         ),
       };
     }

@@ -8,20 +8,20 @@ import Button from "@material-ui/core/Button";
 import s from "./Common.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./state/store";
-import { addTaskAC, TaskT } from "./state/tasks-reducer";
+import { addTaskAC } from "./state/tasks-reducer";
 import {
   changeTodolistFilterAC,
   changeTodolistTitleAC,
-  removeTodolistAC,
-  TodoListT,
+  removeTodolistAC, TodolistDomainT,
 } from "./state/todolists-reducer";
+import {TaskStatuses, TaskT} from "./api/todolists-api";
 
 type TodoListPropsType = {
   todoListId: string;
 };
 
 export const TodoList = React.memo((props: TodoListPropsType) => {
-  const todoList = useSelector<AppRootStateT, TodoListT>(
+  const todoList = useSelector<AppRootStateT, TodolistDomainT>(
     (state) => state.todoLists.filter((tl) => props.todoListId === tl.id)[0]
   );
   const tasks = useSelector<AppRootStateT, Array<TaskT>>(
@@ -31,10 +31,10 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
   
   let tasksForTodoList = useMemo(() => {
     if (todoList.filter === "active") {
-      return tasks.filter((task) => !task.isDone);
+      return tasks.filter((task) => task.status === TaskStatuses.New);
     }
     if (todoList.filter === "completed") {
-       return tasks.filter((task) => task.isDone);
+       return tasks.filter((task) => task.status === TaskStatuses.Completed);
     }
 
     return tasks;

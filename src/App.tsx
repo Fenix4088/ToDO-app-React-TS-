@@ -13,14 +13,14 @@ import {
   Paper,
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
-import { addTodolistAC, TodoListT } from "./state/todolists-reducer";
+import {addTodolistAC, TodolistDomainT} from "./state/todolists-reducer";
 
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./state/store";
 
 function App() {
   const dispatch = useDispatch();
-  const todoLists = useSelector<AppRootStateT, Array<TodoListT>>(
+  const todoLists = useSelector<AppRootStateT, Array<TodolistDomainT>>(
     (state) => state.todoLists
   );
 

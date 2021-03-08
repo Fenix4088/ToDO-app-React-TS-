@@ -7,9 +7,9 @@ import {
   changeTaskStatusAC,
   changeTaskTitleAC,
   removeTaskAC,
-  TaskT,
 } from "./state/tasks-reducer";
 import { useDispatch } from "react-redux";
+import {TaskStatuses, TaskT} from "./api/todolists-api";
 
 export type TodoListItemType = {
   todoListId: string;
@@ -36,6 +36,7 @@ export const TodoListItem: React.FC<TodoListItemType> = React.memo((props) => {
 
   const changeTaskStatus = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
+      // debugger;
       const { checked } = e.currentTarget;
       dispatch(changeTaskStatusAC(task.id, checked, todoListId));
     },
@@ -50,11 +51,11 @@ export const TodoListItem: React.FC<TodoListItemType> = React.memo((props) => {
   );
 
   return (
-    <li className={`${task.isDone ? "is-done" : ""} ${classes.listItem}`}>
+    <li className={`${task.status === TaskStatuses.Completed ? "is-done" : ""} ${classes.listItem}`}>
       <Box>
         <Checkbox
           onChange={changeTaskStatus}
-          checked={task.isDone}
+          checked={Boolean(task.status)}
           color={"primary"}
         />
         <EditableSpan taskTitle={task.title} changeTitle={changeTitle} />

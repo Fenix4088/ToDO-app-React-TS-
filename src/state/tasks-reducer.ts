@@ -10,26 +10,33 @@ type ActionsT =
   | AddTodolistAT
   | RemoveTodolistAT;
 
+enum ActionsTypes {
+  REMOVE_TASK = "REMOVE-TASK",
+  ADD_TASK = "ADD-TASK",
+  CHANGE_TASK_STATUS = "CHANGE-TASK-STATUS",
+  CHANGE_TASK_TITLE = "CHANGE-TASK-TITLE",
+}
+
 export type RemoveTaskT = {
-  type: "REMOVE-TASK";
+  type: typeof ActionsTypes.REMOVE_TASK;
   taskId: string;
   todoListID: string;
 };
 export type AddTaskT = {
-  type: "ADD-TASK";
+  type: typeof ActionsTypes.ADD_TASK;
   title: string;
   todoListID: string;
 };
 
 export type ChangeTaskStatusT = {
-  type: "CHANGE-TASK-STATUS";
+  type: typeof ActionsTypes.CHANGE_TASK_STATUS;
   taskId: string;
   checked: boolean;
   todoListID: string;
 };
 
 export type ChangeTaskTitleT = {
-  type: "CHANGE-TASK-TITLE";
+  type: typeof ActionsTypes.CHANGE_TASK_TITLE;
   taskId: string;
   title: string;
   todoListID: string;
@@ -45,15 +52,16 @@ export const tasksReducer = (
   state: TaskStateT = initialState,
   action: ActionsT
 ): TaskStateT => {
+  const {REMOVE_TASK, ADD_TASK, CHANGE_TASK_TITLE, CHANGE_TASK_STATUS} = ActionsTypes
   switch (action.type) {
-    case "REMOVE-TASK": {
+    case REMOVE_TASK: {
       let copyState = { ...state };
       copyState[action.todoListID] = copyState[action.todoListID].filter(
         (task) => task.id !== action.taskId
       );
       return copyState;
     }
-    case "ADD-TASK": {
+    case ADD_TASK: {
       const task: TaskT = {
         id: v1(),
         title: action.title,
@@ -71,7 +79,7 @@ export const tasksReducer = (
         [action.todoListID]: [task, ...state[action.todoListID]],
       };
     }
-    case "CHANGE-TASK-STATUS": {
+    case CHANGE_TASK_STATUS: {
       const isStatus = action.checked
         ? TaskStatuses.Completed
         : TaskStatuses.New;
@@ -83,7 +91,7 @@ export const tasksReducer = (
         ),
       };
     }
-    case "CHANGE-TASK-TITLE": {
+    case CHANGE_TASK_TITLE: {
       return {
         ...state,
         [action.todoListID]: state[action.todoListID].map((t) =>
@@ -107,19 +115,20 @@ export const tasksReducer = (
   }
 };
 
+
 export const removeTaskAC = (
   taskId: string,
   todoListID: string
 ): RemoveTaskT => {
   return {
-    type: "REMOVE-TASK",
+    type: ActionsTypes.REMOVE_TASK,
     taskId,
     todoListID,
   };
 };
 export const addTaskAC = (title: string, todoListID: string): AddTaskT => {
   return {
-    type: "ADD-TASK",
+    type: ActionsTypes.ADD_TASK,
     title,
     todoListID,
   };
@@ -130,7 +139,7 @@ export const changeTaskStatusAC = (
   todoListID: string
 ): ChangeTaskStatusT => {
   return {
-    type: "CHANGE-TASK-STATUS",
+    type: ActionsTypes.CHANGE_TASK_STATUS,
     taskId,
     todoListID,
     checked,
@@ -142,7 +151,7 @@ export const changeTaskTitleAC = (
   todoListID: string
 ): ChangeTaskTitleT => {
   return {
-    type: "CHANGE-TASK-TITLE",
+    type: ActionsTypes.CHANGE_TASK_TITLE,
     taskId,
     todoListID,
     title,

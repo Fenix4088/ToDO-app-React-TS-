@@ -1,5 +1,5 @@
 import React, {useCallback, useMemo} from "react";
-import { TodoListItem } from "./TodoListItem";
+import { Task } from "./Task";
 import { AddItemForm } from "./AddItemFrom";
 import { EditableSpan } from "./EditableSpan";
 import { IconButton } from "@material-ui/core";
@@ -120,7 +120,7 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
       <ul>
         {tasksForTodoList.length
           ? tasksForTodoList.map((task) => (
-              <TodoListItem
+              <Task
                 key={task.id}
                 todoListId={props.todoListId}
                 task={task}

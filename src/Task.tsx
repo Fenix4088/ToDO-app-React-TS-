@@ -25,7 +25,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const TodoListItem: React.FC<TodoListItemType> = React.memo((props) => {
+export const Task: React.FC<TodoListItemType> = React.memo((props) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const { task, todoListId } = props;

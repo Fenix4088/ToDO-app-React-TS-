@@ -1,19 +1,19 @@
 import React from "react";
-import { TodoListItem, TodoListItemType } from "./TodoListItem";
+import { Task, TodoListItemType } from "./Task";
 import { ReduxStoreProviderDecorator } from "./stories/ReduxStoreProviderDecorator";
 import { Story } from "@storybook/react/types-6-0";
 import { TaskPriorities, TaskStatuses } from "./api/todolists-api";
 
 export default {
-  title: "TodoListItem Component",
-  component: TodoListItem,
+  title: "Task Component",
+  component: Task,
   decorators: [ReduxStoreProviderDecorator],
 };
 
 export const TodoListItemBaseExample = () => {
   return (
     <>
-      <TodoListItem
+      <Task
         todoListId={"todoListId1"}
         task={{
           id: "1",
@@ -28,7 +28,7 @@ export const TodoListItemBaseExample = () => {
           todoListId: "todolistId2",
         }}
       />
-      <TodoListItem
+      <Task
         todoListId={"todoListId1"}
         task={{
           id: "2",
@@ -51,7 +51,7 @@ export const TodoListItemBaseExample = () => {
 const Template: Story<TodoListItemType> = (args) => {
   return (
     <>
-      <TodoListItem
+      <Task
         {...args}
         task={{
           id: "3",
@@ -66,7 +66,7 @@ const Template: Story<TodoListItemType> = (args) => {
           todoListId: "todolistId2",
         }}
       />
-      <TodoListItem
+      <Task
         {...args}
         task={{
           id: "4",
@@ -106,7 +106,7 @@ Together2.args = {
         },*/
 };
 
-const Template2: Story<TodoListItemType> = (args) => <TodoListItem {...args} />;
+const Template2: Story<TodoListItemType> = (args) => <Task {...args} />;
 
 export const Separate1 = Template2.bind({});
 Separate1.args = {

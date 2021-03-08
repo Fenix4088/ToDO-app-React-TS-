@@ -24,7 +24,7 @@ export type AddTaskT = {
 export type ChangeTaskStatusT = {
   type: "CHANGE-TASK-STATUS";
   taskId: string;
-  isDone: boolean;
+  checked: boolean;
   todoListID: string;
 };
 
@@ -79,7 +79,7 @@ export const tasksReducer = (
       };
     }
     case "CHANGE-TASK-STATUS": {
-      const isStatus = action.isDone
+      const isStatus = action.checked
         ? TaskStatuses.Completed
         : TaskStatuses.New;
 
@@ -133,14 +133,14 @@ export const addTaskAC = (title: string, todoListID: string): AddTaskT => {
 };
 export const changeTaskStatusAC = (
   taskId: string,
-  isDone: boolean,
+  checked: boolean,
   todoListID: string
 ): ChangeTaskStatusT => {
   return {
     type: "CHANGE-TASK-STATUS",
     taskId,
     todoListID,
-    isDone,
+    checked,
   };
 };
 export const changeTaskTitleAC = (

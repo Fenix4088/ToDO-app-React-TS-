@@ -36,7 +36,6 @@ export const Task: React.FC<TodoListItemType> = React.memo((props) => {
 
   const changeTaskStatus = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      // debugger;
       const { checked } = e.currentTarget;
       dispatch(changeTaskStatusAC(task.id, checked, todoListId));
     },

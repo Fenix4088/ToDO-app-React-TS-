@@ -10,7 +10,7 @@ type ActionsT =
   | AddTodolistAT
   | RemoveTodolistAT;
 
-enum ActionsTypes {
+enum TasksActionsTypes {
   REMOVE_TASK = "REMOVE-TASK",
   ADD_TASK = "ADD-TASK",
   CHANGE_TASK_STATUS = "CHANGE-TASK-STATUS",
@@ -18,25 +18,25 @@ enum ActionsTypes {
 }
 
 export type RemoveTaskT = {
-  type: typeof ActionsTypes.REMOVE_TASK;
+  type: typeof TasksActionsTypes.REMOVE_TASK;
   taskId: string;
   todoListID: string;
 };
 export type AddTaskT = {
-  type: typeof ActionsTypes.ADD_TASK;
+  type: typeof TasksActionsTypes.ADD_TASK;
   title: string;
   todoListID: string;
 };
 
 export type ChangeTaskStatusT = {
-  type: typeof ActionsTypes.CHANGE_TASK_STATUS;
+  type: typeof TasksActionsTypes.CHANGE_TASK_STATUS;
   taskId: string;
   checked: boolean;
   todoListID: string;
 };
 
 export type ChangeTaskTitleT = {
-  type: typeof ActionsTypes.CHANGE_TASK_TITLE;
+  type: typeof TasksActionsTypes.CHANGE_TASK_TITLE;
   taskId: string;
   title: string;
   todoListID: string;
@@ -52,7 +52,7 @@ export const tasksReducer = (
   state: TaskStateT = initialState,
   action: ActionsT
 ): TaskStateT => {
-  const {REMOVE_TASK, ADD_TASK, CHANGE_TASK_TITLE, CHANGE_TASK_STATUS} = ActionsTypes
+  const {REMOVE_TASK, ADD_TASK, CHANGE_TASK_TITLE, CHANGE_TASK_STATUS} = TasksActionsTypes
   switch (action.type) {
     case REMOVE_TASK: {
       let copyState = { ...state };
@@ -121,14 +121,14 @@ export const removeTaskAC = (
   todoListID: string
 ): RemoveTaskT => {
   return {
-    type: ActionsTypes.REMOVE_TASK,
+    type: TasksActionsTypes.REMOVE_TASK,
     taskId,
     todoListID,
   };
 };
 export const addTaskAC = (title: string, todoListID: string): AddTaskT => {
   return {
-    type: ActionsTypes.ADD_TASK,
+    type: TasksActionsTypes.ADD_TASK,
     title,
     todoListID,
   };
@@ -139,7 +139,7 @@ export const changeTaskStatusAC = (
   todoListID: string
 ): ChangeTaskStatusT => {
   return {
-    type: ActionsTypes.CHANGE_TASK_STATUS,
+    type: TasksActionsTypes.CHANGE_TASK_STATUS,
     taskId,
     todoListID,
     checked,
@@ -151,7 +151,7 @@ export const changeTaskTitleAC = (
   todoListID: string
 ): ChangeTaskTitleT => {
   return {
-    type: ActionsTypes.CHANGE_TASK_TITLE,
+    type: TasksActionsTypes.CHANGE_TASK_TITLE,
     taskId,
     todoListID,
     title,

@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo} from "react";
+import React, { useCallback, useMemo } from "react";
 import { Task } from "./Task";
 import { AddItemForm } from "./AddItemFrom";
 import { EditableSpan } from "./EditableSpan";
@@ -12,9 +12,10 @@ import { addTaskAC } from "./state/tasks-reducer";
 import {
   changeTodolistFilterAC,
   changeTodolistTitleAC,
-  removeTodolistAC, TodolistDomainT,
+  removeTodolistAC,
+  TodolistDomainT,
 } from "./state/todolists-reducer";
-import {TaskStatuses, TaskT} from "./api/todolists-api";
+import { TaskStatuses, TaskT } from "./api/todolists-api";
 
 type TodoListPropsType = {
   todoListId: string;
@@ -28,18 +29,17 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
     (state) => state.tasks[props.todoListId]
   );
   const dispatch = useDispatch();
-  
+
   let tasksForTodoList = useMemo(() => {
     if (todoList.filter === "active") {
       return tasks.filter((task) => task.status === TaskStatuses.New);
     }
     if (todoList.filter === "completed") {
-       return tasks.filter((task) => task.status === TaskStatuses.Completed);
+      return tasks.filter((task) => task.status === TaskStatuses.Completed);
     }
 
     return tasks;
-
-  }, [todoList.filter, tasks])
+  }, [todoList.filter, tasks]);
 
   const addTask = useCallback(
     (title: string) => {
@@ -120,11 +120,7 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
       <ul>
         {tasksForTodoList.length
           ? tasksForTodoList.map((task) => (
-              <Task
-                key={task.id}
-                todoListId={props.todoListId}
-                task={task}
-              />
+              <Task key={task.id} todoListId={props.todoListId} task={task} />
             ))
           : showNoTasksMessage(todoList.filter)}
       </ul>

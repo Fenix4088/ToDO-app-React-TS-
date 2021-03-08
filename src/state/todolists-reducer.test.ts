@@ -18,11 +18,15 @@ beforeEach(function () {
       id: todoListId1,
       title: "What to learn",
       filter: "all",
+      addedDate: "",
+      order: 1
     },
     {
       id: todoListId2,
       title: "What to buy",
       filter: "all",
+      addedDate: "",
+      order: 1
     },
   ];
 });

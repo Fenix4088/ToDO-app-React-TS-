@@ -35,11 +35,6 @@ export type ChangeTaskTitleT = {
   todoListID: string;
 };
 
-/*export type TaskT = {
-  id: string;
-  title: string;
-  isDone: boolean;
-};*/
 export type TaskStateT = {
   [key: string]: Array<TaskT>;
 };
@@ -50,8 +45,6 @@ export const tasksReducer = (
   state: TaskStateT = initialState,
   action: ActionsT
 ): TaskStateT => {
-  // debugger;
-
   switch (action.type) {
     case "REMOVE-TASK": {
       let copyState = { ...state };

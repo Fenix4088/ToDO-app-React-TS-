@@ -9,7 +9,7 @@ import {
   removeTaskAC,
 } from "./state/tasks-reducer";
 import { useDispatch } from "react-redux";
-import {TaskStatuses, TaskT} from "./api/todolists-api";
+import { TaskStatuses, TaskT } from "./api/todolists-api";
 
 export type TodoListItemType = {
   todoListId: string;
@@ -50,11 +50,15 @@ export const Task: React.FC<TodoListItemType> = React.memo((props) => {
   );
 
   return (
-    <li className={`${task.status === TaskStatuses.Completed ? "is-done" : ""} ${classes.listItem}`}>
+    <li
+      className={`${task.status === TaskStatuses.Completed ? "is-done" : ""} ${
+        classes.listItem
+      }`}
+    >
       <Box>
         <Checkbox
           onChange={changeTaskStatus}
-          checked={Boolean(task.status)}
+          checked={task.status === TaskStatuses.Completed}
           color={"primary"}
         />
         <EditableSpan taskTitle={task.title} changeTitle={changeTitle} />

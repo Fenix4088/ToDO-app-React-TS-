@@ -10,7 +10,7 @@ export default {
   decorators: [ReduxStoreProviderDecorator],
 };
 
-export const TodoListItemBaseExample = () => {
+export const TaskBaseExample = () => {
   return (
     <>
       <Task
@@ -90,20 +90,20 @@ export const Together1 = Template.bind({});
 Together1.args = {
   todoListId: "todoListId1",
   /*  task: {
-        id: "3",
-        title: "New storybook syntax",
-        isDone: true,
-      },*/
+          id: "3",
+          title: "New storybook syntax",
+          isDone: true,
+        },*/
 };
 
 export const Together2 = Template.bind({});
 Together2.args = {
   todoListId: "todoListId1",
   /*    task: {
-            id: "3",
-            title: "New storybook syntax",
-            isDone: false,
-        },*/
+              id: "3",
+              title: "New storybook syntax",
+              isDone: false,
+          },*/
 };
 
 const Template2: Story<TodoListItemType> = (args) => <Task {...args} />;

@@ -8,6 +8,7 @@ import {
 } from "./tasks-reducer";
 import { addTodolistAC, removeTodolistAC } from "./todolists-reducer";
 import { v1 } from "uuid";
+import { TaskStatuses } from "../api/todolists-api";
 
 let startState: TaskStateT;
 const todoListId1 = v1();
@@ -16,14 +17,80 @@ const todoListId2 = v1();
 beforeEach(function () {
   startState = {
     [todoListId1]: [
-      { id: "1", title: "CSS", isDone: false },
-      { id: "2", title: "JS", isDone: true },
-      { id: "3", title: "React", isDone: false },
+      {
+        id: "1",
+        title: "CSS",
+        status: TaskStatuses.New,
+        description: "",
+        priority: 0,
+        startDate: "",
+        deadline: "",
+        todoListId: todoListId1,
+        order: 1,
+        addedDate: "",
+      },
+      {
+        id: "2",
+        title: "JS",
+        status: TaskStatuses.Completed,
+        description: "",
+        priority: 0,
+        startDate: "",
+        deadline: "",
+        todoListId: todoListId1,
+        order: 1,
+        addedDate: "",
+      },
+      {
+        id: "3",
+        title: "React",
+        status: TaskStatuses.New,
+        description: "",
+        priority: 0,
+        startDate: "",
+        deadline: "",
+        todoListId: todoListId1,
+        order: 1,
+        addedDate: "",
+      },
     ],
     [todoListId2]: [
-      { id: "1", title: "bread", isDone: false },
-      { id: "2", title: "milk", isDone: true },
-      { id: "3", title: "tea", isDone: false },
+      {
+        id: "1",
+        title: "bread",
+        status: TaskStatuses.New,
+        description: "",
+        priority: 0,
+        startDate: "",
+        deadline: "",
+        todoListId: todoListId2,
+        order: 1,
+        addedDate: "",
+      },
+      {
+        id: "2",
+        title: "milk",
+        status: TaskStatuses.Completed,
+        description: "",
+        priority: 0,
+        startDate: "",
+        deadline: "",
+        todoListId: todoListId2,
+        order: 1,
+        addedDate: "",
+      },
+      {
+        id: "3",
+        title: "tea",
+        status: TaskStatuses.New,
+        description: "",
+        priority: 0,
+        startDate: "",
+        deadline: "",
+        todoListId: todoListId2,
+        order: 1,
+        addedDate: "",
+      },
     ],
   };
 });
@@ -35,13 +102,68 @@ test("correct task should be deleted from correct array", () => {
 
   expect(endState).toEqual({
     [todoListId1]: [
-      { id: "1", title: "CSS", isDone: false },
-      { id: "2", title: "JS", isDone: true },
-      { id: "3", title: "React", isDone: false },
+      {
+        id: "1",
+        title: "CSS",
+        status: TaskStatuses.New,
+        description: "",
+        priority: 0,
+        startDate: "",
+        deadline: "",
+        todoListId: todoListId1,
+        order: 1,
+        addedDate: "",
+      },
+      {
+        id: "2",
+        title: "JS",
+        status: TaskStatuses.Completed,
+        description: "",
+        priority: 0,
+        startDate: "",
+        deadline: "",
+        todoListId: todoListId1,
+        order: 1,
+        addedDate: "",
+      },
+      {
+        id: "3",
+        title: "React",
+        status: TaskStatuses.New,
+        description: "",
+        priority: 0,
+        startDate: "",
+        deadline: "",
+        todoListId: todoListId1,
+        order: 1,
+        addedDate: "",
+      },
     ],
     [todoListId2]: [
-      { id: "1", title: "bread", isDone: false },
-      { id: "3", title: "tea", isDone: false },
+      {
+        id: "1",
+        title: "bread",
+        status: TaskStatuses.New,
+        description: "",
+        priority: 0,
+        startDate: "",
+        deadline: "",
+        todoListId: todoListId2,
+        order: 1,
+        addedDate: "",
+      },
+      {
+        id: "3",
+        title: "tea",
+        status: TaskStatuses.New,
+        description: "",
+        priority: 0,
+        startDate: "",
+        deadline: "",
+        todoListId: todoListId2,
+        order: 1,
+        addedDate: "",
+      },
     ],
   });
 });
@@ -55,7 +177,7 @@ test("correct task should be added to correct array", () => {
   expect(endState[todoListId2].length).toBe(4);
   expect(endState[todoListId2][0].id).toBeDefined();
   expect(endState[todoListId2][0].title).toBe("juce");
-  expect(endState[todoListId2][0].isDone).toBe(false);
+  expect(endState[todoListId2][0].status).toBe(TaskStatuses.New);
 });
 
 test("status of specified task should be changed", () => {
@@ -63,8 +185,8 @@ test("status of specified task should be changed", () => {
 
   const endState = tasksReducer(startState, action);
 
-  expect(endState[todoListId2][1].isDone).toBe(false);
-  expect(endState[todoListId1][1].isDone).toBe(true);
+  expect(endState[todoListId2][1].status).toBe(TaskStatuses.New);
+  expect(endState[todoListId1][1].status).toBe(TaskStatuses.Completed);
 
   expect(endState[todoListId2].length).toBe(3);
 });

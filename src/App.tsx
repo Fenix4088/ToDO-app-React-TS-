@@ -13,7 +13,7 @@ import {
   Paper,
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
-import {addTodolistAC, TodolistDomainT} from "./state/todolists-reducer";
+import { addTodolistAC, TodolistDomainT } from "./state/todolists-reducer";
 
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./state/store";

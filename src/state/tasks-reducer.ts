@@ -1,6 +1,18 @@
 import { v1 } from "uuid";
-import { AddTodolistAT, RemoveTodolistAT } from "./todolists-reducer";
-import { TaskPriorities, TaskStatuses, TaskT } from "../api/todolists-api";
+import {
+  AddTodolistAT,
+  RemoveTodolistAT,
+  SetTodoListsAT,
+  TodolistsActionTypes,
+} from "./todolists-reducer";
+import {
+  TaskPriorities,
+  TaskStatuses,
+  TaskT,
+  todolistsAPI,
+} from "../api/todolists-api";
+import { ThunkAction } from "redux-thunk";
+import { AppRootStateT } from "./store";
 
 type ActionsT =
   | RemoveTaskT
@@ -8,13 +20,16 @@ type ActionsT =
   | ChangeTaskStatusT
   | ChangeTaskTitleT
   | AddTodolistAT
-  | RemoveTodolistAT;
+  | RemoveTodolistAT
+  | SetTodoListsAT
+  | SetTasksAT;
 
 enum TasksActionsTypes {
   REMOVE_TASK = "REMOVE-TASK",
   ADD_TASK = "ADD-TASK",
   CHANGE_TASK_STATUS = "CHANGE-TASK-STATUS",
   CHANGE_TASK_TITLE = "CHANGE-TASK-TITLE",
+  SET_TASKS = "SET-TASKS",
 }
 
 export type RemoveTaskT = {
@@ -42,6 +57,19 @@ export type ChangeTaskTitleT = {
   todoListID: string;
 };
 
+export type SetTasksAT = {
+  type: typeof TasksActionsTypes.SET_TASKS;
+  tasks: Array<TaskT>;
+  todoListID: string;
+};
+
+export type TasksThunkT<ReturnType = void> = ThunkAction<
+  ReturnType,
+  AppRootStateT,
+  unknown,
+  ActionsT
+>;
+
 export type TaskStateT = {
   [key: string]: Array<TaskT>;
 };
@@ -57,7 +85,9 @@ export const tasksReducer = (
     ADD_TASK,
     CHANGE_TASK_TITLE,
     CHANGE_TASK_STATUS,
+    SET_TASKS,
   } = TasksActionsTypes;
+
   switch (action.type) {
     case REMOVE_TASK: {
       let copyState = { ...state };
@@ -104,21 +134,39 @@ export const tasksReducer = (
         ),
       };
     }
-    case "ADD-TODOLIST": {
+    case TodolistsActionTypes.ADD_TODOLIST: {
       return {
         ...state,
         [action.todolistId]: [],
       };
     }
-    case "REMOVE-TODOLIST": {
+    case TodolistsActionTypes.REMOVE_TODOLIST: {
       const copyState = { ...state };
       delete copyState[action.id];
       return copyState;
+    }
+    case TodolistsActionTypes.SET_TODO_LISTS: {
+      const stateCopy = { ...state };
+
+      action.todoLists.forEach((tl) => {
+        stateCopy[tl.id] = [];
+      });
+
+      return stateCopy;
+    }
+
+    case SET_TASKS: {
+      return {
+        ...state,
+        [action.todoListID]: action.tasks,
+      };
     }
     default:
       return state;
   }
 };
+
+// * Action Creators
 
 export const removeTaskAC = (
   taskId: string,
@@ -160,4 +208,23 @@ export const changeTaskTitleAC = (
     todoListID,
     title,
   };
+};
+
+export const setTasksAC = (
+  todoListID: string,
+  tasks: Array<TaskT>
+): SetTasksAT => {
+  return {
+    type: TasksActionsTypes.SET_TASKS,
+    todoListID,
+    tasks,
+  };
+};
+
+//* Thunks
+
+export const fetchTasks = (TodoListId: string): TasksThunkT => (dispatch) => {
+  todolistsAPI
+    .getTasks(TodoListId)
+    .then((res) => dispatch(setTasksAC(TodoListId, res.data.items)));
 };

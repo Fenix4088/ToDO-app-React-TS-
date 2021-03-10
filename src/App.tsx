@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, {useCallback, useEffect} from "react";
 import "./App.css";
 import { TodoList } from "./TodoList";
 import { AddItemForm } from "./AddItemFrom";
@@ -13,7 +13,11 @@ import {
   Paper,
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
-import { addTodolistAC, TodolistDomainT } from "./state/todolists-reducer";
+import {
+  addTodolistAC,
+  fetchTodoListsTC,
+  TodolistDomainT
+} from "./state/todolists-reducer";
 
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./state/store";
@@ -23,6 +27,12 @@ function App() {
   const todoLists = useSelector<AppRootStateT, Array<TodolistDomainT>>(
     (state) => state.todoLists
   );
+
+
+  useEffect(() =>{
+    console.log("Effect")
+    dispatch(fetchTodoListsTC())
+  }, [dispatch])
 
   const addTodoList = useCallback(
     (todoListTitle: string): void => {

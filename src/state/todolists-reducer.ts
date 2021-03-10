@@ -1,11 +1,11 @@
 import { v1 } from "uuid";
-import {TodolistT} from "../api/todolists-api";
+import { TodolistT } from "../api/todolists-api";
 
 export type FilterValuesT = "all" | "active" | "completed";
 
 export type TodolistDomainT = TodolistT & {
-  filter: FilterValuesT
-}
+  filter: FilterValuesT;
+};
 
 export type TodolistReducerStateT = Array<TodolistDomainT>;
 
@@ -15,12 +15,11 @@ type ActionsT =
   | ChangeTodolistTitleAT
   | ChangeTodolistFilterAT;
 
-enum TodolistsActionTypes  {
+enum TodolistsActionTypes {
   REMOVE_TODOLIST = "REMOVE-TODOLIST",
   ADD_TODOLIST = "ADD-TODOLIST",
   CHANGE_TODOLIST_TITLE = "CHANGE-TODOLIST-TITLE",
   CHANGE_TODOLIST_FILTER = "CHANGE-TODOLIST-FILTER",
-
 }
 
 export type RemoveTodolistAT = {
@@ -51,8 +50,12 @@ export const todolistsReducer = (
   state: TodolistReducerStateT = initialState,
   action: ActionsT
 ): TodolistReducerStateT => {
-
-  const {CHANGE_TODOLIST_FILTER, CHANGE_TODOLIST_TITLE, ADD_TODOLIST, REMOVE_TODOLIST} = TodolistsActionTypes
+  const {
+    CHANGE_TODOLIST_FILTER,
+    CHANGE_TODOLIST_TITLE,
+    ADD_TODOLIST,
+    REMOVE_TODOLIST,
+  } = TodolistsActionTypes;
 
   switch (action.type) {
     case REMOVE_TODOLIST:
@@ -64,7 +67,7 @@ export const todolistsReducer = (
           title: action.title,
           filter: "all",
           addedDate: "",
-          order: 1
+          order: 1,
         },
         ...state,
       ];

@@ -52,7 +52,12 @@ export const tasksReducer = (
   state: TaskStateT = initialState,
   action: ActionsT
 ): TaskStateT => {
-  const {REMOVE_TASK, ADD_TASK, CHANGE_TASK_TITLE, CHANGE_TASK_STATUS} = TasksActionsTypes
+  const {
+    REMOVE_TASK,
+    ADD_TASK,
+    CHANGE_TASK_TITLE,
+    CHANGE_TASK_STATUS,
+  } = TasksActionsTypes;
   switch (action.type) {
     case REMOVE_TASK: {
       let copyState = { ...state };
@@ -114,7 +119,6 @@ export const tasksReducer = (
       return state;
   }
 };
-
 
 export const removeTaskAC = (
   taskId: string,

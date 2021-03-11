@@ -1,17 +1,7 @@
-
-import {
-  AddTodolistAT,
-  RemoveTodolistAT,
-  SetTodoListsAT,
-  TodolistsActionTypes,
-} from "./todolists-reducer";
-import {
-  TaskStatuses,
-  TaskT,
-  todoListsAPI,
-} from "../api/todolists-api";
-import { ThunkAction } from "redux-thunk";
-import { AppRootStateT } from "./store";
+import {AddTodolistAT, RemoveTodolistAT, SetTodoListsAT, TodolistsActionTypes,} from "./todolists-reducer";
+import {TaskPriorities, TaskStatuses, TaskT, todoListsAPI, UpdateTaskModelType,} from "../api/todolists-api";
+import {ThunkAction} from "redux-thunk";
+import {AppRootStateT} from "./store";
 
 type ActionsT =
   | RemoveTaskT
@@ -44,7 +34,7 @@ export type AddTaskT = {
 export type ChangeTaskStatusT = {
   type: typeof TasksActionsTypes.CHANGE_TASK_STATUS;
   taskId: string;
-  checked: boolean;
+  status: TaskStatuses;
   todoListID: string;
 };
 
@@ -103,14 +93,10 @@ export const tasksReducer = (
       };
     }
     case CHANGE_TASK_STATUS: {
-      const isStatus = action.checked
-        ? TaskStatuses.Completed
-        : TaskStatuses.New;
-
       return {
         ...state,
         [action.todoListID]: state[action.todoListID].map((t) =>
-          t.id === action.taskId ? { ...t, status: isStatus } : t
+          t.id === action.taskId ? { ...t, status: action.status } : t
         ),
       };
     }
@@ -174,14 +160,14 @@ export const addTaskAC = (task: TaskT): AddTaskT => {
 };
 export const changeTaskStatusAC = (
   taskId: string,
-  checked: boolean,
-  todoListID: string
+  todoListID: string,
+  status: TaskStatuses,
 ): ChangeTaskStatusT => {
   return {
     type: TasksActionsTypes.CHANGE_TASK_STATUS,
     taskId,
     todoListID,
-    checked,
+    status,
   };
 };
 export const changeTaskTitleAC = (
@@ -230,4 +216,27 @@ export const createTask = (todoListId: string, title: string): TasksThunkT => (
   todoListsAPI
     .createTask(todoListId, title)
     .then((res) => dispatch(addTaskAC(res.data.data.item)));
+};
+
+export const updateTaskStatus = (taskId: string, todoListId: string,  status: TaskStatuses): TasksThunkT => (
+  dispatch, getState
+) => {
+    const state = getState();
+    const task = state.tasks[todoListId].find(t => t.id === taskId);
+    if(!task) {
+      throw new Error("Task no found in the STATE");
+    }
+
+    const model: UpdateTaskModelType = {
+      title: task.title,
+      description: task.description,
+      status: status,
+      priority: TaskPriorities.Low,
+      startDate: task.startDate,
+      deadline: task.deadline
+    }
+
+  todoListsAPI
+    .updateTask(taskId, todoListId, model)
+    .then((res) => dispatch(changeTaskStatusAC(taskId, todoListId, status)));
 };

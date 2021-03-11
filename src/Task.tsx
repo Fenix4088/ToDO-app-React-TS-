@@ -6,7 +6,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import {
   changeTaskStatusAC,
   changeTaskTitleAC,
-  deleteTask,
+  deleteTask, updateTaskStatus,
 } from "./state/tasks-reducer";
 import { useDispatch } from "react-redux";
 import { TaskStatuses, TaskT } from "./api/todolists-api";
@@ -37,7 +37,12 @@ export const Task: React.FC<TodoListItemType> = React.memo((props) => {
   const changeTaskStatus = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const { checked } = e.currentTarget;
-      dispatch(changeTaskStatusAC(task.id, checked, todoListId));
+      const status = checked
+          ? TaskStatuses.Completed
+          : TaskStatuses.New;
+
+      dispatch(updateTaskStatus(task.id, todoListId, status));
+      // dispatch(changeTaskStatusAC(task.id, checked, todoListId));
     },
     [dispatch, todoListId, task.id]
   );

@@ -13,8 +13,7 @@ import {
   changeTodolistFilterAC,
   changeTodolistTitleAC,
   deleteTodoList,
-  removeTodolistAC,
-  TodolistDomainT,
+  TodolistDomainT, updateTodoList,
 } from "./state/todolists-reducer";
 import { TaskStatuses, TaskT } from "./api/todolists-api";
 
@@ -71,7 +70,7 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
 
   const changeTodoListTitle = useCallback(
     (newTitle: string) => {
-      dispatch(changeTodolistTitleAC(newTitle, todoList.id));
+      dispatch(updateTodoList(todoList.id, newTitle));
     },
     [dispatch, todoList.id]
   );

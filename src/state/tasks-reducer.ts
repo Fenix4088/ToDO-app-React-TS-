@@ -8,8 +8,7 @@ import {
 import {
   TaskPriorities,
   TaskStatuses,
-  TaskT,
-  todolistsAPI,
+  TaskT, todoListsAPI,
 } from "../api/todolists-api";
 import { ThunkAction } from "redux-thunk";
 import { AppRootStateT } from "./store";
@@ -178,7 +177,7 @@ export const removeTaskAC = (
     todoListID,
   };
 };
-export const addTaskAC = (title: string, todoListID: string): AddTaskT => {
+export const addTaskAC = (todoListID: string, title: string): AddTaskT => {
   return {
     type: TasksActionsTypes.ADD_TASK,
     title,
@@ -224,7 +223,20 @@ export const setTasksAC = (
 //* Thunks
 
 export const fetchTasks = (TodoListId: string): TasksThunkT => (dispatch) => {
-  todolistsAPI
+  todoListsAPI
     .getTasks(TodoListId)
     .then((res) => dispatch(setTasksAC(TodoListId, res.data.items)));
+};
+
+export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (dispatch) => {
+  todoListsAPI.deleteTask(taskId, todoListId)
+      .then(res => {
+        dispatch(removeTaskAC(taskId, todoListId));
+      })
+};
+
+export const createTask = (todoListId: string, title: string): TasksThunkT => (dispatch) => {
+  todoListsAPI
+      .createTask(todoListId, title)
+      .then((res) => dispatch(addTaskAC(todoListId, title)));
 };

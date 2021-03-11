@@ -58,7 +58,7 @@ const instance = axios.create({
   ...settings,
 });
 
-export const todolistsAPI = {
+export const todoListsAPI = {
   getTodolists() {
     return instance.get<Array<TodolistT>>("todo-lists");
   },
@@ -89,7 +89,7 @@ export const todolistsAPI = {
     });
   },
 
-  deleteTask(todoListId: string, taskId: string) {
+  deleteTask( taskId: string, todoListId: string) {
     return instance.delete<ResponseT>(
       `todo-lists/${todoListId}/tasks/${taskId}`
     );

@@ -1,5 +1,5 @@
 import { v1 } from "uuid";
-import {todolistsAPI, TodolistT} from "../api/todolists-api";
+import {todoListsAPI, TodolistT} from "../api/todolists-api";
 import { ThunkAction } from 'redux-thunk'
 import {AppRootStateT} from "./store";
 
@@ -155,6 +155,6 @@ export const setTodoListsAC = (todoLists: Array<TodolistT>): SetTodoListsAT => {
 
 
 export const fetchTodoListsTC = (): TodoListThunkT => (dispatch) => {
-  todolistsAPI.getTodolists()
+  todoListsAPI.getTodolists()
       .then(res => dispatch(setTodoListsAC(res.data)))
 }

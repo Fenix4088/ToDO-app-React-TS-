@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import {
-  addTodolistAC,
+  addTodolistAC, createTodoList,
   fetchTodoListsTC,
   TodolistDomainT
 } from "./state/todolists-reducer";
@@ -35,7 +35,7 @@ function App() {
 
   const addTodoList = useCallback(
     (todoListTitle: string): void => {
-      dispatch(addTodolistAC(todoListTitle));
+      dispatch(createTodoList(todoListTitle));
     },
     [dispatch]
   );

@@ -23,7 +23,7 @@ export const CreateTodolist = () => {
 
   const onCreateTodoList = (): void => {
     todoListsAPI
-      .createTodolist(todoListTitle)
+      .createTodoList(todoListTitle)
       .then((res) => setState(res.data));
   };
 

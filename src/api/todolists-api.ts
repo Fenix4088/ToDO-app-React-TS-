@@ -63,7 +63,7 @@ export const todoListsAPI = {
     return instance.get<Array<TodolistT>>("todo-lists");
   },
 
-  createTodolist(title: string) {
+  createTodoList(title: string) {
     return instance.post<ResponseT<{ item: TodolistT }>>("todo-lists", {
       title,
     });

@@ -3,11 +3,7 @@ import { EditableSpan } from "./EditableSpan";
 import { Box, Checkbox, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {
-  changeTaskStatusAC,
-  changeTaskTitleAC,
-  deleteTask, updateTaskStatus,
-} from "./state/tasks-reducer";
+import { deleteTask, updateTask } from "./state/tasks-reducer";
 import { useDispatch } from "react-redux";
 import { TaskStatuses, TaskT } from "./api/todolists-api";
 
@@ -37,19 +33,16 @@ export const Task: React.FC<TodoListItemType> = React.memo((props) => {
   const changeTaskStatus = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const { checked } = e.currentTarget;
-      const status = checked
-          ? TaskStatuses.Completed
-          : TaskStatuses.New;
+      const status = checked ? TaskStatuses.Completed : TaskStatuses.New;
 
-      dispatch(updateTaskStatus(task.id, todoListId, status));
-      // dispatch(changeTaskStatusAC(task.id, checked, todoListId));
+      dispatch(updateTask(task.id, todoListId, { status }));
     },
     [dispatch, todoListId, task.id]
   );
 
   const changeTitle = useCallback(
     (newTitle: string): void => {
-      dispatch(changeTaskTitleAC(task.id, newTitle, todoListId));
+      dispatch(updateTask(task.id, todoListId, { title: newTitle }));
     },
     [dispatch, todoListId, task.id]
   );

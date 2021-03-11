@@ -1,6 +1,6 @@
 import {
   addTaskAC,
-  changeTaskStatusAC,
+  updateTaskAC,
   changeTaskTitleAC,
   removeTaskAC, setTasksAC,
   tasksReducer,
@@ -196,7 +196,7 @@ test("correct task should be added to correct array", () => {
 });
 
 test("status of specified task should be changed", () => {
-  const action = changeTaskStatusAC("2", false, todoListId2);
+  const action = updateTaskAC("2", false, todoListId2);
 
   const endState = tasksReducer(startState, action);
 

@@ -1,4 +1,4 @@
-import { v1 } from "uuid";
+
 import {
   AddTodolistAT,
   RemoveTodolistAT,
@@ -6,7 +6,6 @@ import {
   TodolistsActionTypes,
 } from "./todolists-reducer";
 import {
-  TaskPriorities,
   TaskStatuses,
   TaskT,
   todoListsAPI,
@@ -100,7 +99,7 @@ export const tasksReducer = (
 
       return {
         ...state,
-        [task.todoListId]: [task, ...state[action.task.todoListId]],
+        [task.todoListId]: [task, ...state[task.todoListId]],
       };
     }
     case CHANGE_TASK_STATUS: {

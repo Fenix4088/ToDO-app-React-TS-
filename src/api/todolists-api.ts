@@ -69,7 +69,7 @@ export const todoListsAPI = {
     });
   },
 
-  deleteTodolist(todoListId: string) {
+  deleteTodoList(todoListId: string) {
     return instance.delete<ResponseT>(`todo-lists/${todoListId}`);
   },
 

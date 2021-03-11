@@ -7,10 +7,9 @@ import {
   changeTaskStatusAC,
   changeTaskTitleAC,
   deleteTask,
-  removeTaskAC,
 } from "./state/tasks-reducer";
 import { useDispatch } from "react-redux";
-import { TaskStatuses, TaskT, todoListsAPI } from "./api/todolists-api";
+import { TaskStatuses, TaskT } from "./api/todolists-api";
 
 export type TodoListItemType = {
   todoListId: string;

@@ -1,7 +1,7 @@
 import { v1 } from "uuid";
-import {todoListsAPI, TodolistT} from "../api/todolists-api";
-import { ThunkAction } from 'redux-thunk'
-import {AppRootStateT} from "./store";
+import { todoListsAPI, TodolistT } from "../api/todolists-api";
+import { ThunkAction } from "redux-thunk";
+import { AppRootStateT } from "./store";
 
 export type FilterValuesT = "all" | "active" | "completed";
 
@@ -51,11 +51,11 @@ export type SetTodoListsAT = {
 };
 
 export type TodoListThunkT<ReturnType = void> = ThunkAction<
-    ReturnType,
-    AppRootStateT,
-    unknown,
-    ActionsT
-    >
+  ReturnType,
+  AppRootStateT,
+  unknown,
+  ActionsT
+>;
 
 const initialState: TodolistReducerStateT = [];
 
@@ -94,7 +94,7 @@ export const todolistsReducer = (
         tl.id === action.id ? { ...tl, filter: action.filter } : tl
       );
     case SET_TODO_LISTS:
-      return action.todoLists.map(tl => ({...tl, filter: "all"}));
+      return action.todoLists.map((tl) => ({ ...tl, filter: "all" }));
     default:
       return state;
   }
@@ -140,21 +140,17 @@ export const changeTodolistFilterAC = (
 export const setTodoListsAC = (todoLists: Array<TodolistT>): SetTodoListsAT => {
   return {
     type: TodolistsActionTypes.SET_TODO_LISTS,
-    todoLists
-  }
-}
+    todoLists,
+  };
+};
 
 // * Thunks
-/*export const fetchTodoLists = (): TodoListThunkT => (dispatch) => {
-  debugger;
-  console.log("Hello")
-  todolistsAPI.getTodolists().then(res => {
-    console.log(res);
-  })
-}*/
-
-
 export const fetchTodoListsTC = (): TodoListThunkT => (dispatch) => {
-  todoListsAPI.getTodolists()
-      .then(res => dispatch(setTodoListsAC(res.data)))
-}
+  todoListsAPI.getTodolists().then((res) => dispatch(setTodoListsAC(res.data)));
+};
+
+export const deleteTodoList = (todoListId: string): TodoListThunkT => (dispatch) => {
+  todoListsAPI
+    .deleteTodoList(todoListId)
+    .then((res) => dispatch(removeTodolistAC(todoListId)));
+};

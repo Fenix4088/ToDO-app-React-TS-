@@ -58,7 +58,7 @@ export const DeleteTodolist = () => {
     setTodoListId(value);
   };
   const onDeleteTodoList = (): void => {
-    todoListsAPI.deleteTodolist(todoListId).then((res) => setState(res.data));
+    todoListsAPI.deleteTodoList(todoListId).then((res) => setState(res.data));
     setTodoListId("");
   };
 

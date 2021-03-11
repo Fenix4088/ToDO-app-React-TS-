@@ -30,7 +30,6 @@ function App() {
 
 
   useEffect(() =>{
-    console.log("Effect")
     dispatch(fetchTodoListsTC())
   }, [dispatch])
 

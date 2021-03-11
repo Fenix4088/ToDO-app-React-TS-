@@ -18,7 +18,7 @@ type ActionsT =
   | RemoveTaskT
   | AddTaskT
   | UpdateTaskT
-  | ChangeTaskTitleT
+  /*| ChangeTaskTitleT*/
   | AddTodolistAT
   | RemoveTodolistAT
   | SetTodoListsAT
@@ -28,7 +28,7 @@ enum TasksActionsTypes {
   REMOVE_TASK = "REMOVE-TASK",
   ADD_TASK = "ADD-TASK",
   UPDATE_TASK = "CHANGE-TASK-STATUS",
-  CHANGE_TASK_TITLE = "CHANGE-TASK-TITLE",
+  /* CHANGE_TASK_TITLE = "CHANGE-TASK-TITLE",*/
   SET_TASKS = "SET-TASKS",
 }
 
@@ -49,12 +49,12 @@ export type UpdateTaskT = {
   todoListID: string;
 };
 
-export type ChangeTaskTitleT = {
+/*export type ChangeTaskTitleT = {
   type: typeof TasksActionsTypes.CHANGE_TASK_TITLE;
   taskId: string;
   title: string;
   todoListID: string;
-};
+};*/
 
 export type SetTasksAT = {
   type: typeof TasksActionsTypes.SET_TASKS;
@@ -91,7 +91,7 @@ export const tasksReducer = (
   const {
     REMOVE_TASK,
     ADD_TASK,
-    CHANGE_TASK_TITLE,
+    /*CHANGE_TASK_TITLE,*/
     UPDATE_TASK,
     SET_TASKS,
   } = TasksActionsTypes;
@@ -120,14 +120,14 @@ export const tasksReducer = (
         ),
       };
     }
-    case CHANGE_TASK_TITLE: {
-      return {
-        ...state,
-        [action.todoListID]: state[action.todoListID].map((t) =>
-          t.id === action.taskId ? { ...t, title: action.title } : t
-        ),
-      };
-    }
+    /*    case CHANGE_TASK_TITLE: {
+              return {
+                ...state,
+                [action.todoListID]: state[action.todoListID].map((t) =>
+                  t.id === action.taskId ? { ...t, title: action.title } : t
+                ),
+              };
+            }*/
     case TodolistsActionTypes.ADD_TODOLIST: {
       return {
         ...state,
@@ -161,7 +161,6 @@ export const tasksReducer = (
 };
 
 // * Action Creators
-
 export const removeTaskAC = (
   taskId: string,
   todoListID: string
@@ -190,7 +189,7 @@ export const updateTaskAC = (
     model,
   };
 };
-export const changeTaskTitleAC = (
+/*export const changeTaskTitleAC = (
   taskId: string,
   title: string,
   todoListID: string
@@ -201,7 +200,7 @@ export const changeTaskTitleAC = (
     todoListID,
     title,
   };
-};
+};*/
 
 export const setTasksAC = (
   todoListID: string,
@@ -215,7 +214,6 @@ export const setTasksAC = (
 };
 
 //* Thunks
-
 export const fetchTasks = (TodoListId: string): TasksThunkT => (dispatch) => {
   todoListsAPI
     .getTasks(TodoListId)
@@ -243,7 +241,6 @@ export const updateTask = (
   todoListId: string,
   domainModel: UpdateDomainTaskModelT
 ): TasksThunkT => (dispatch, getState) => {
-
   const state = getState();
   const task = state.tasks[todoListId].find((t) => t.id === taskId);
 
@@ -258,7 +255,7 @@ export const updateTask = (
     priority: TaskPriorities.Low,
     startDate: task.startDate,
     deadline: task.deadline,
-    ...domainModel
+    ...domainModel,
   };
 
   todoListsAPI

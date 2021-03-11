@@ -13,7 +13,8 @@ import {
   changeTodolistFilterAC,
   changeTodolistTitleAC,
   deleteTodoList,
-  TodolistDomainT, updateTodoList,
+  TodolistDomainT,
+  updateTodoList,
 } from "./state/todolists-reducer";
 import { TaskStatuses, TaskT } from "./api/todolists-api";
 

@@ -13,6 +13,7 @@ import {
 } from "../../api/todolists-api";
 import { ThunkAction } from "redux-thunk";
 import { AppRootStateT } from "../../app/store";
+import {setErrorAC, SetErrorAT} from "../../app/app-reducer";
 
 // * types
 type ActionsT =
@@ -40,7 +41,7 @@ export type TasksThunkT<ReturnType = void> = ThunkAction<
   ReturnType,
   AppRootStateT,
   unknown,
-  ActionsT
+  ActionsT | SetErrorAT
 >;
 
 export type TaskStateT = {
@@ -181,7 +182,14 @@ export const createTask = (todoListId: string, title: string): TasksThunkT => (
 ) => {
   todoListsAPI
     .createTask(todoListId, title)
-    .then((res) => dispatch(addTaskAC(res.data.data.item)));
+    .then((res) => {
+      if(res.data.resultCode === 0) {
+        dispatch(addTaskAC(res.data.data.item))
+      } else {
+        dispatch(setErrorAC(res.data.messages[0]))
+      }
+
+    });
 };
 
 export const updateTask = (

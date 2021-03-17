@@ -10,7 +10,7 @@ import {
   Toolbar,
   Container,
   Grid,
-  Paper,
+  Paper, LinearProgress,
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import {
@@ -21,6 +21,7 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./store";
+import {CustomizedSnackbars} from "../components/ErrorSnackbar/ErrorSnackBar";
 
 function App() {
   const dispatch = useDispatch();
@@ -49,6 +50,8 @@ function App() {
           <Typography variant="h6">News</Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>
+        <LinearProgress color="secondary"/>
+        <CustomizedSnackbars/>
       </AppBar>
 
       <Container>

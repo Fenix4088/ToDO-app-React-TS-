@@ -10,10 +10,11 @@ import {
   TaskT,
   todoListsAPI,
   UpdateTaskModelType,
-} from "../api/todolists-api";
+} from "../../api/todolists-api";
 import { ThunkAction } from "redux-thunk";
-import { AppRootStateT } from "./store";
+import { AppRootStateT } from "../../app/store";
 
+// * types
 type ActionsT =
   | RemoveTaskAT
   | AddTaskAT
@@ -55,6 +56,7 @@ export type UpdateDomainTaskModelT = {
   deadline?: string;
 };
 
+// * reducer
 const initialState: TaskStateT = {};
 
 export const tasksReducer = (
@@ -70,15 +72,15 @@ export const tasksReducer = (
 
   switch (action.type) {
     case REMOVE_TASK: {
-      let copyState = { ...state };
-      copyState[action.todoListID] = copyState[action.todoListID].filter(
-        (task) => task.id !== action.taskId
-      );
-      return copyState;
+      return {
+        ...state,
+        [action.todoListID]: state[action.todoListID].filter(
+          (task) => task.id !== action.taskId
+        ),
+      };
     }
     case ADD_TASK: {
       const { task } = action;
-
       return {
         ...state,
         [task.todoListId]: [task, ...state[task.todoListId]],
@@ -105,14 +107,12 @@ export const tasksReducer = (
     }
     case TodolistsActionTypes.SET_TODO_LISTS: {
       const stateCopy = { ...state };
-
       action.todoLists.forEach((tl) => {
         stateCopy[tl.id] = [];
       });
 
       return stateCopy;
     }
-
     case SET_TASKS: {
       return {
         ...state,
@@ -132,12 +132,14 @@ export const removeTaskAC = (taskId: string, todoListID: string) => {
     todoListID,
   } as const;
 };
+
 export const addTaskAC = (task: TaskT) => {
   return {
     type: TasksActionsTypes.ADD_TASK,
     task,
   } as const;
 };
+
 export const updateTaskAC = (
   taskId: string,
   todoListID: string,

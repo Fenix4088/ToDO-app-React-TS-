@@ -1,7 +1,8 @@
-import { todoListsAPI, TodolistT } from "../api/todolists-api";
+import { todoListsAPI, TodolistT } from "../../api/todolists-api";
 import { ThunkAction } from "redux-thunk";
-import { AppRootStateT } from "./store";
+import { AppRootStateT } from "../../app/store";
 
+// * types
 export type FilterValuesT = "all" | "active" | "completed";
 
 export type TodolistDomainT = TodolistT & {
@@ -38,6 +39,7 @@ export type TodoListThunkT<ReturnType = void> = ThunkAction<
   ActionsT
 >;
 
+// * reducer
 const initialState: TodolistReducerStateT = [];
 
 export const todolistsReducer = (
@@ -56,11 +58,13 @@ export const todolistsReducer = (
     case REMOVE_TODOLIST:
       return state.filter((tl) => tl.id !== action.id);
     case ADD_TODOLIST: {
-      const newTodoList: TodolistDomainT = {
-        ...action.todoList,
-        filter: "all",
-      };
-      return [newTodoList, ...state];
+      return [
+        {
+          ...action.todoList,
+          filter: "all",
+        },
+        ...state,
+      ];
     }
     case CHANGE_TODOLIST_TITLE:
       return state.map((tl) =>

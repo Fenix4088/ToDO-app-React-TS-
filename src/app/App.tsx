@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import "./App.css";
-import { TodoList } from "./TodoList";
-import { AddItemForm } from "./AddItemFrom";
+import { TodoList } from "../features/TodoLists/TodoList/TodoList";
+import { AddItemForm } from "../components/AddItemForm/AddItemFrom";
 import {
   AppBar,
   Button,
@@ -17,10 +17,10 @@ import {
   createTodoList,
   fetchTodoListsTC,
   TodolistDomainT,
-} from "./state/todolists-reducer";
+} from "../features/TodoLists/todolists-reducer";
 
 import { useDispatch, useSelector } from "react-redux";
-import { AppRootStateT } from "./state/store";
+import { AppRootStateT } from "./store";
 
 function App() {
   const dispatch = useDispatch();

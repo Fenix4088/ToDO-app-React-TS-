@@ -1,6 +1,6 @@
 import {combineReducers, createStore, applyMiddleware} from "redux";
-import { todolistsReducer } from "./todolists-reducer";
-import { tasksReducer } from "./tasks-reducer";
+import { todolistsReducer } from "../features/TodoLists/todolists-reducer";
+import { tasksReducer } from "../features/TodoLists/tasks-reducer";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from 'redux-thunk';
 

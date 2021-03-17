@@ -1,7 +1,6 @@
 import {
   addTaskAC,
   updateTaskAC,
-  changeTaskTitleAC,
   removeTaskAC, setTasksAC,
   tasksReducer,
   TaskStateT,
@@ -12,7 +11,7 @@ import {
   setTodoListsAC,
 } from "./todolists-reducer";
 import { v1 } from "uuid";
-import { TaskStatuses } from "../api/todolists-api";
+import {TaskPriorities, TaskStatuses} from "../../api/todolists-api";
 
 let startState: TaskStateT;
 const todoListId1 = v1();
@@ -101,75 +100,15 @@ beforeEach(function () {
 
 test("correct task should be deleted from correct array", () => {
   const action = removeTaskAC("2", todoListId2);
-
   const endState = tasksReducer(startState, action);
 
-  expect(endState).toEqual({
-    [todoListId1]: [
-      {
-        id: "1",
-        title: "CSS",
-        status: TaskStatuses.New,
-        description: "",
-        priority: 0,
-        startDate: "",
-        deadline: "",
-        todoListId: todoListId1,
-        order: 1,
-        addedDate: "",
-      },
-      {
-        id: "2",
-        title: "JS",
-        status: TaskStatuses.Completed,
-        description: "",
-        priority: 0,
-        startDate: "",
-        deadline: "",
-        todoListId: todoListId1,
-        order: 1,
-        addedDate: "",
-      },
-      {
-        id: "3",
-        title: "React",
-        status: TaskStatuses.New,
-        description: "",
-        priority: 0,
-        startDate: "",
-        deadline: "",
-        todoListId: todoListId1,
-        order: 1,
-        addedDate: "",
-      },
-    ],
-    [todoListId2]: [
-      {
-        id: "1",
-        title: "bread",
-        status: TaskStatuses.New,
-        description: "",
-        priority: 0,
-        startDate: "",
-        deadline: "",
-        todoListId: todoListId2,
-        order: 1,
-        addedDate: "",
-      },
-      {
-        id: "3",
-        title: "tea",
-        status: TaskStatuses.New,
-        description: "",
-        priority: 0,
-        startDate: "",
-        deadline: "",
-        todoListId: todoListId2,
-        order: 1,
-        addedDate: "",
-      },
-    ],
-  });
+  expect(startState[todoListId2].length).toBe(3);
+  expect(endState[todoListId2].length).toBe(2);
+  expect(endState[todoListId2] === startState[todoListId2]).toBeFalsy();
+  expect(endState[todoListId2].some(el => el.id !== "2")).toBeTruthy();
+  expect(endState[todoListId2].some(el => el.title !== "milk")).toBeTruthy();
+  expect(endState[todoListId1].length === startState[todoListId1].length).toBeTruthy();
+
 });
 
 test("correct task should be added to correct array", () => {
@@ -196,26 +135,27 @@ test("correct task should be added to correct array", () => {
 });
 
 test("status of specified task should be changed", () => {
-  const action = updateTaskAC("2", false, todoListId2);
+  const action = updateTaskAC("1", todoListId2, {
+    title: "Updated task",
+    description: "I am update task",
+    status: TaskStatuses.Completed,
+    priority: 1,
+    startDate: "string",
+    deadline: "string",
+  });
 
   const endState = tasksReducer(startState, action);
+  console.log(endState)
+  expect(endState[todoListId2].length).toBe(endState[todoListId2].length)
 
-  expect(endState[todoListId2][1].status).toBe(TaskStatuses.New);
-  expect(endState[todoListId1][1].status).toBe(TaskStatuses.Completed);
+  expect(endState[todoListId2].length === startState[todoListId2].length).toBeTruthy();
+  expect(endState[todoListId2][0].status).toBe(TaskStatuses.Completed);
+  expect(startState[todoListId2][0].status).toBe(TaskStatuses.New);
 
-  expect(endState[todoListId2].length).toBe(3);
-});
-
-test("title of specified task should be changed", () => {
-  const action = changeTaskTitleAC("2", "New title", todoListId2);
-
-  const endState = tasksReducer(startState, action);
-
-  expect(endState[todoListId1][1].title).toBe("JS");
-  expect(endState[todoListId2][1].title).toBe("New title");
 });
 
 test("new array should be added when new todolist is added", () => {
+  //@ts-ignore
   const action = addTodolistAC("new todolist");
 
   const endState = tasksReducer(startState, action);

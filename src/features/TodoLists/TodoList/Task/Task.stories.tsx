@@ -1,8 +1,8 @@
 import React from "react";
 import { Task, TodoListItemType } from "./Task";
-import { ReduxStoreProviderDecorator } from "./stories/ReduxStoreProviderDecorator";
+import { ReduxStoreProviderDecorator } from "../../../../stories/ReduxStoreProviderDecorator";
 import { Story } from "@storybook/react/types-6-0";
-import { TaskPriorities, TaskStatuses } from "./api/todolists-api";
+import { TaskPriorities, TaskStatuses } from "../../../../api/todolists-api";
 
 export default {
   title: "Task Component",

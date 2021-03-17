@@ -15,7 +15,7 @@ import { ThunkAction } from "redux-thunk";
 import { AppRootStateT } from "../../app/store";
 import {
   setErrorAC,
-  SetErrorAT, setTasksLoadStatusAC,
+  SetErrorAT, setStatusAT, setTasksLoadStatusAC,
   setTasksLoadStatusAT,
 } from "../../app/app-reducer";
 
@@ -175,23 +175,28 @@ export const fetchTasks = (TodoListId: string): TasksThunkT => (dispatch) => {
 export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (
   dispatch
 ) => {
+  dispatch(setTasksLoadStatusAC("loading"));
   todoListsAPI.deleteTask(taskId, todoListId).then(() => {
     dispatch(removeTaskAC(taskId, todoListId));
+    dispatch(setTasksLoadStatusAC("succeeded"));
   });
 };
 
 export const createTask = (todoListId: string, title: string): TasksThunkT => (
   dispatch
 ) => {
+  dispatch(setTasksLoadStatusAC("loading"));
   todoListsAPI.createTask(todoListId, title).then((res) => {
     if (res.data.resultCode === 0) {
       dispatch(addTaskAC(res.data.data.item));
+      dispatch(setTasksLoadStatusAC("succeeded"));
     } else {
       if (res.data.messages[0]) {
         dispatch(setErrorAC(res.data.messages[0]));
       } else {
         dispatch(setErrorAC("Unknown error :-("));
       }
+      dispatch(setTasksLoadStatusAC("failed"));
     }
   });
 };

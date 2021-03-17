@@ -1,13 +1,14 @@
 import { todoListsAPI, TodolistT } from "../../api/todolists-api";
 import { ThunkAction } from "redux-thunk";
 import { AppRootStateT } from "../../app/store";
-import { setStatusAC, setStatusAT } from "../../app/app-reducer";
+import {setStatusAC, setStatusAT, StatusT} from "../../app/app-reducer";
 
 // * types
 export type FilterValuesT = "all" | "active" | "completed";
 
 export type TodolistDomainT = TodolistT & {
   filter: FilterValuesT;
+  entityStatus: StatusT
 };
 
 export type TodolistReducerStateT = Array<TodolistDomainT>;
@@ -63,6 +64,7 @@ export const todolistsReducer = (
         {
           ...action.todoList,
           filter: "all",
+          entityStatus: "idle"
         },
         ...state,
       ];
@@ -76,7 +78,7 @@ export const todolistsReducer = (
         tl.id === action.id ? { ...tl, filter: action.filter } : tl
       );
     case SET_TODO_LISTS:
-      return action.todoLists.map((tl) => ({ ...tl, filter: "all" }));
+      return action.todoLists.map((tl) => ({ ...tl, filter: "all" , entityStatus: "idle"}));
     default:
       return state;
   }
@@ -123,25 +125,28 @@ export const setTodoListsAC = (todoLists: Array<TodolistT>) => {
 // * Thunks
 export const fetchTodoListsTC = (): TodoListThunkT => (dispatch) => {
   dispatch(setStatusAC("loading"));
-  todoListsAPI.getTodolists().then((res) =>{
+  todoListsAPI.getTodolists().then((res) => {
     dispatch(setTodoListsAC(res.data));
-    dispatch(setStatusAC("idle"));
-
+    dispatch(setStatusAC("succeeded"));
   });
 };
 
 export const deleteTodoList = (todoListId: string): TodoListThunkT => (
   dispatch
 ) => {
-  todoListsAPI
-    .deleteTodoList(todoListId)
-    .then(() => dispatch(removeTodolistAC(todoListId)));
+  dispatch(setStatusAC("loading"));
+  todoListsAPI.deleteTodoList(todoListId).then(() => {
+    dispatch(removeTodolistAC(todoListId));
+    dispatch(setStatusAC("succeeded"));
+  });
 };
 
 export const createTodoList = (title: string): TodoListThunkT => (dispatch) => {
-  todoListsAPI
-    .createTodoList(title)
-    .then((res) => dispatch(addTodolistAC(res.data.data.item)));
+  dispatch(setStatusAC("loading"));
+  todoListsAPI.createTodoList(title).then((res) => {
+    dispatch(addTodolistAC(res.data.data.item));
+    dispatch(setStatusAC("succeeded"));
+  });
 };
 
 export const updateTodoList = (

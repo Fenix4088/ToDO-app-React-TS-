@@ -11,7 +11,6 @@ import { AppRootStateT } from "./state/store";
 import { createTask, fetchTasks } from "./state/tasks-reducer";
 import {
   changeTodolistFilterAC,
-  changeTodolistTitleAC,
   deleteTodoList,
   TodolistDomainT,
   updateTodoList,

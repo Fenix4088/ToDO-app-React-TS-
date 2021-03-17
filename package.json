@@ -28,6 +28,7 @@
     "typescript": "~3.7.2",
     "uuid": "^8.3.2"
   },
+  "homepage": "https://fenix4088.github.io/ToDO-app-React-TS-",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -36,7 +37,9 @@
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public",
     "jest:integration": "jest -c integration/jest.config.js",
-    "test:integration": "start-server-and-test storybook http-get://localhost:9009 jest:integration"
+    "test:integration": "start-server-and-test storybook http-get://localhost:9009 jest:integration",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -60,6 +63,7 @@
     "@storybook/node-logger": "^6.1.20",
     "@storybook/preset-create-react-app": "^3.1.6",
     "@storybook/react": "^6.1.20",
+    "gh-pages": "^3.1.0",
     "jest-image-snapshot": "^4.3.0",
     "jest-puppeteer": "^4.4.0",
     "puppeteer": "^7.1.0",

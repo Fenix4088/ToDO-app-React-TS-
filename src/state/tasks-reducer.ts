@@ -15,10 +15,9 @@ import { ThunkAction } from "redux-thunk";
 import { AppRootStateT } from "./store";
 
 type ActionsT =
-  | RemoveTaskT
-  | AddTaskT
-  | UpdateTaskT
-  /*| ChangeTaskTitleT*/
+  | RemoveTaskAT
+  | AddTaskAT
+  | UpdateTaskAT
   | AddTodolistAT
   | RemoveTodolistAT
   | SetTodoListsAT
@@ -28,39 +27,13 @@ enum TasksActionsTypes {
   REMOVE_TASK = "REMOVE-TASK",
   ADD_TASK = "ADD-TASK",
   UPDATE_TASK = "CHANGE-TASK-STATUS",
-  /* CHANGE_TASK_TITLE = "CHANGE-TASK-TITLE",*/
   SET_TASKS = "SET-TASKS",
 }
 
-export type RemoveTaskT = {
-  type: typeof TasksActionsTypes.REMOVE_TASK;
-  taskId: string;
-  todoListID: string;
-};
-export type AddTaskT = {
-  type: typeof TasksActionsTypes.ADD_TASK;
-  task: TaskT;
-};
-
-export type UpdateTaskT = {
-  type: typeof TasksActionsTypes.UPDATE_TASK;
-  taskId: string;
-  model: UpdateDomainTaskModelT;
-  todoListID: string;
-};
-
-/*export type ChangeTaskTitleT = {
-  type: typeof TasksActionsTypes.CHANGE_TASK_TITLE;
-  taskId: string;
-  title: string;
-  todoListID: string;
-};*/
-
-export type SetTasksAT = {
-  type: typeof TasksActionsTypes.SET_TASKS;
-  tasks: Array<TaskT>;
-  todoListID: string;
-};
+export type RemoveTaskAT = ReturnType<typeof removeTaskAC>;
+export type AddTaskAT = ReturnType<typeof addTaskAC>;
+export type UpdateTaskAT = ReturnType<typeof updateTaskAC>;
+export type SetTasksAT = ReturnType<typeof setTasksAC>;
 
 export type TasksThunkT<ReturnType = void> = ThunkAction<
   ReturnType,
@@ -91,7 +64,6 @@ export const tasksReducer = (
   const {
     REMOVE_TASK,
     ADD_TASK,
-    /*CHANGE_TASK_TITLE,*/
     UPDATE_TASK,
     SET_TASKS,
   } = TasksActionsTypes;
@@ -120,14 +92,6 @@ export const tasksReducer = (
         ),
       };
     }
-    /*    case CHANGE_TASK_TITLE: {
-              return {
-                ...state,
-                [action.todoListID]: state[action.todoListID].map((t) =>
-                  t.id === action.taskId ? { ...t, title: action.title } : t
-                ),
-              };
-            }*/
     case TodolistsActionTypes.ADD_TODOLIST: {
       return {
         ...state,
@@ -161,56 +125,38 @@ export const tasksReducer = (
 };
 
 // * Action Creators
-export const removeTaskAC = (
-  taskId: string,
-  todoListID: string
-): RemoveTaskT => {
+export const removeTaskAC = (taskId: string, todoListID: string) => {
   return {
     type: TasksActionsTypes.REMOVE_TASK,
     taskId,
     todoListID,
-  };
+  } as const;
 };
-export const addTaskAC = (task: TaskT): AddTaskT => {
+export const addTaskAC = (task: TaskT) => {
   return {
     type: TasksActionsTypes.ADD_TASK,
     task,
-  };
+  } as const;
 };
 export const updateTaskAC = (
   taskId: string,
   todoListID: string,
   model: UpdateDomainTaskModelT
-): UpdateTaskT => {
+) => {
   return {
     type: TasksActionsTypes.UPDATE_TASK,
     taskId,
     todoListID,
     model,
-  };
+  } as const;
 };
-/*export const changeTaskTitleAC = (
-  taskId: string,
-  title: string,
-  todoListID: string
-): ChangeTaskTitleT => {
-  return {
-    type: TasksActionsTypes.CHANGE_TASK_TITLE,
-    taskId,
-    todoListID,
-    title,
-  };
-};*/
 
-export const setTasksAC = (
-  todoListID: string,
-  tasks: Array<TaskT>
-): SetTasksAT => {
+export const setTasksAC = (todoListID: string, tasks: Array<TaskT>) => {
   return {
     type: TasksActionsTypes.SET_TASKS,
     todoListID,
     tasks,
-  };
+  } as const;
 };
 
 //* Thunks
@@ -223,7 +169,7 @@ export const fetchTasks = (TodoListId: string): TasksThunkT => (dispatch) => {
 export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (
   dispatch
 ) => {
-  todoListsAPI.deleteTask(taskId, todoListId).then((res) => {
+  todoListsAPI.deleteTask(taskId, todoListId).then(() => {
     dispatch(removeTaskAC(taskId, todoListId));
   });
 };
@@ -260,5 +206,5 @@ export const updateTask = (
 
   todoListsAPI
     .updateTask(taskId, todoListId, apiModel)
-    .then((res) => dispatch(updateTaskAC(taskId, todoListId, domainModel)));
+    .then(() => dispatch(updateTaskAC(taskId, todoListId, domainModel)));
 };

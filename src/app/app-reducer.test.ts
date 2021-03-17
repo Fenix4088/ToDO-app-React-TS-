@@ -1,47 +1,32 @@
+import {appReducer, InitialStateT, setErrorAC, setStatusAC, StatusT} from "./app-reducer";
 
-// * types
-type InitialStateT = {
-    status: "idle" | "loading" | "succeeded" | "failed";
-    error: string | null;
-};
+let startState: InitialStateT;
 
-enum appActionsConst  {
-    APP_SET_STATUS = "APP/SET-STATUS",
-    APP_SET_ERROR = "APP/SET-ERROR"
-}
+beforeEach(function () {
+    startState = {
+        status: "idle",
+        error: null,
+    };
+});
 
-type ActionsT = SetErrorAT | any;
+test("should set error", () => {
+    const action = setErrorAC("Error");
+    const endState = appReducer(startState, action);
 
-export type SetErrorAT = ReturnType<typeof setErrorAC>
+    expect(endState !== startState).toBeTruthy();
+    expect(endState.error).toBe("Error");
+    expect(typeof endState.error).toBe("string");
+});
 
-// * reducer
-const initialState: InitialStateT = {
-    status: "idle",
-    error: null,
-}
+test("should set status", () => {
+    const action = setStatusAC("loading");
+    const endState = appReducer(startState, action);
 
-export const appReducer = (state: InitialStateT = initialState, action: ActionsT):InitialStateT => {
-    const {APP_SET_STATUS, APP_SET_ERROR} = appActionsConst;
+    expect(endState !== startState).toBeTruthy();
+    expect(endState.status).toBe("loading");
+    expect(typeof endState.status).toBe("string");
+});
 
-    switch (action.type) {
-        case APP_SET_STATUS: {
-            return {...state, status: action.status};
-        }
-        case APP_SET_ERROR: {
-            return {...state, error: action.error};
-        }
-        default:
-            return state;
-    }
 
-}
 
-// * AC
-export const setErrorAC = (error: string | null) => {
-    return {
-        type: appActionsConst.APP_SET_ERROR,
-        error
-    } as const;
-}
 
-// * TC

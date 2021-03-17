@@ -86,6 +86,7 @@ const initialGlobalState = {
   app: {
     status: "idle",
     error: null,
+    tasksLoadStatus: "idle",
   }
 };
 

@@ -13,7 +13,11 @@ import {
 } from "../../api/todolists-api";
 import { ThunkAction } from "redux-thunk";
 import { AppRootStateT } from "../../app/store";
-import {setErrorAC, SetErrorAT} from "../../app/app-reducer";
+import {
+  setErrorAC,
+  SetErrorAT, setTasksLoadStatusAC,
+  setTasksLoadStatusAT,
+} from "../../app/app-reducer";
 
 // * types
 type ActionsT =
@@ -41,7 +45,7 @@ export type TasksThunkT<ReturnType = void> = ThunkAction<
   ReturnType,
   AppRootStateT,
   unknown,
-  ActionsT | SetErrorAT
+  ActionsT | SetErrorAT | setTasksLoadStatusAT
 >;
 
 export type TaskStateT = {
@@ -64,12 +68,7 @@ export const tasksReducer = (
   state: TaskStateT = initialState,
   action: ActionsT
 ): TaskStateT => {
-  const {
-    REMOVE_TASK,
-    ADD_TASK,
-    UPDATE_TASK,
-    SET_TASKS,
-  } = TasksActionsTypes;
+  const { REMOVE_TASK, ADD_TASK, UPDATE_TASK, SET_TASKS } = TasksActionsTypes;
 
   switch (action.type) {
     case REMOVE_TASK: {
@@ -164,9 +163,13 @@ export const setTasksAC = (todoListID: string, tasks: Array<TaskT>) => {
 
 //* Thunks
 export const fetchTasks = (TodoListId: string): TasksThunkT => (dispatch) => {
+  dispatch(setTasksLoadStatusAC("loading"));
   todoListsAPI
     .getTasks(TodoListId)
-    .then((res) => dispatch(setTasksAC(TodoListId, res.data.items)));
+    .then((res) => {
+      dispatch(setTasksAC(TodoListId, res.data.items));
+      dispatch(setTasksLoadStatusAC("idle"));
+    });
 };
 
 export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (
@@ -180,16 +183,17 @@ export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (
 export const createTask = (todoListId: string, title: string): TasksThunkT => (
   dispatch
 ) => {
-  todoListsAPI
-    .createTask(todoListId, title)
-    .then((res) => {
-      if(res.data.resultCode === 0) {
-        dispatch(addTaskAC(res.data.data.item))
+  todoListsAPI.createTask(todoListId, title).then((res) => {
+    if (res.data.resultCode === 0) {
+      dispatch(addTaskAC(res.data.data.item));
+    } else {
+      if (res.data.messages[0]) {
+        dispatch(setErrorAC(res.data.messages[0]));
       } else {
-        dispatch(setErrorAC(res.data.messages[0]))
+        dispatch(setErrorAC("Unknown error :-("));
       }
-
-    });
+    }
+  });
 };
 
 export const updateTask = (

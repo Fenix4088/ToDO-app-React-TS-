@@ -18,16 +18,17 @@ import {
   fetchTodoListsTC,
   TodolistDomainT,
 } from "../features/TodoLists/todolists-reducer";
-
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./store";
 import {CustomizedSnackbars} from "../components/ErrorSnackbar/ErrorSnackBar";
+import {StatusT} from "./app-reducer";
 
 function App() {
-  const dispatch = useDispatch();
   const todoLists = useSelector<AppRootStateT, Array<TodolistDomainT>>(
     (state) => state.todoLists
   );
+  const appStatus = useSelector<AppRootStateT, StatusT>(state => state.app.status)
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchTodoListsTC());
@@ -50,7 +51,8 @@ function App() {
           <Typography variant="h6">News</Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>
-        <LinearProgress color="secondary"/>
+        {appStatus === "loading" && <LinearProgress color="secondary"/>}
+
         <CustomizedSnackbars/>
       </AppBar>
 

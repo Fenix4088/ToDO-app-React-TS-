@@ -1,6 +1,7 @@
 import { todoListsAPI, TodolistT } from "../../api/todolists-api";
 import { ThunkAction } from "redux-thunk";
 import { AppRootStateT } from "../../app/store";
+import { setStatusAC, setStatusAT } from "../../app/app-reducer";
 
 // * types
 export type FilterValuesT = "all" | "active" | "completed";
@@ -36,7 +37,7 @@ export type TodoListThunkT<ReturnType = void> = ThunkAction<
   ReturnType,
   AppRootStateT,
   unknown,
-  ActionsT
+  ActionsT | setStatusAT
 >;
 
 // * reducer
@@ -121,7 +122,12 @@ export const setTodoListsAC = (todoLists: Array<TodolistT>) => {
 
 // * Thunks
 export const fetchTodoListsTC = (): TodoListThunkT => (dispatch) => {
-  todoListsAPI.getTodolists().then((res) => dispatch(setTodoListsAC(res.data)));
+  dispatch(setStatusAC("loading"));
+  todoListsAPI.getTodolists().then((res) =>{
+    dispatch(setTodoListsAC(res.data));
+    dispatch(setStatusAC("idle"));
+
+  });
 };
 
 export const deleteTodoList = (todoListId: string): TodoListThunkT => (

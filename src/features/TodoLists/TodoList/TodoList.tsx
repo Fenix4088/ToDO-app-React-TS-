@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { Task } from "./Task/Task";
 import { AddItemForm } from "../../../components/AddItemForm/AddItemFrom";
 import { EditableSpan } from "../../../components/EditableSpan/EditableSpan";
-import { IconButton } from "@material-ui/core";
+import { AppBar, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import s from "../../../Common.module.scss";
@@ -16,6 +16,8 @@ import {
   updateTodoList,
 } from "../todolists-reducer";
 import { TaskStatuses, TaskT } from "../../../api/todolists-api";
+import { TasksPreloader } from "../../../components/TasksPreloader/TaskspPreloader";
+import { StatusT } from "../../../app/app-reducer";
 
 type TodoListPropsType = {
   todoListId: string;
@@ -28,6 +30,11 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
   const tasks = useSelector<AppRootStateT, Array<TaskT>>(
     (state) => state.tasks[props.todoListId]
   );
+
+  const tasksLoadingStatus = useSelector<AppRootStateT, StatusT>(
+    (state) => state.app.tasksLoadStatus
+  );
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -120,14 +127,17 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
           Completed
         </Button>
       </div>
-
-      <ul>
-        {tasksForTodoList.length
-          ? tasksForTodoList.map((task) => (
-              <Task key={task.id} todoListId={props.todoListId} task={task} />
-            ))
-          : showNoTasksMessage(todoList.filter)}
-      </ul>
+      {tasksLoadingStatus === "loading" ? (
+        <TasksPreloader />
+      ) : (
+        <ul>
+          {tasksForTodoList.length
+            ? tasksForTodoList.map((task) => (
+                <Task key={task.id} todoListId={props.todoListId} task={task} />
+              ))
+            : showNoTasksMessage(todoList.filter)}
+        </ul>
+      )}
     </div>
   );
 });

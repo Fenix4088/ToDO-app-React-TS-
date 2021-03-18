@@ -2,6 +2,7 @@ import { todoListsAPI, TodolistT } from "../../api/todolists-api";
 import { ThunkAction } from "redux-thunk";
 import { AppRootStateT } from "../../app/store";
 import { setAppStatusAC, setAppStatusAT, StatusT } from "../../app/app-reducer";
+import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
 
 // * types
 export type FilterValuesT = "all" | "active" | "completed";
@@ -148,10 +149,14 @@ export const changeTodoListEntityStatusAC = (todoListId: string, entityStatus: S
 // * Thunks
 export const fetchTodoListsTC = (): TodoListThunkT => (dispatch) => {
   dispatch(setAppStatusAC("loading"));
-  todoListsAPI.getTodolists().then((res) => {
+  todoListsAPI.getTodolists()
+      .then((res) => {
     dispatch(setTodoListsAC(res.data));
     dispatch(setAppStatusAC("succeeded"));
-  });
+  })
+      .catch(err => {
+        handleServerNetworkError(err, dispatch)
+      });
 };
 
 export const deleteTodoList = (todoListId: string): TodoListThunkT => (

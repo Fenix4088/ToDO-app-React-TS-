@@ -8,7 +8,7 @@ import Button from "@material-ui/core/Button";
 import s from "../../../Common.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "../../../app/store";
-import { createTask, fetchTasks } from "../tasks-reducer";
+import {createTask, fetchTasks, TaskDomainT} from "../tasks-reducer";
 import {
   changeTodolistFilterAC,
   deleteTodoList,
@@ -29,12 +29,8 @@ export const TodoList = React.memo(({ demo = false, ...props} : TodoListPropsTyp
   const todoList = useSelector<AppRootStateT, TodolistDomainT>(
     (state) => state.todoLists.filter((tl) => props.todoListId === tl.id)[0]
   );
-  const tasks = useSelector<AppRootStateT, Array<TaskT>>(
+  const tasks = useSelector<AppRootStateT, Array<TaskDomainT>>(
     (state) => state.tasks[props.todoListId]
-  );
-
-  const tasksLoadingStatus = useSelector<AppRootStateT, StatusT>(
-    (state) => state.app.tasksLoadStatus
   );
 
   const dispatch = useDispatch();
@@ -132,7 +128,7 @@ export const TodoList = React.memo(({ demo = false, ...props} : TodoListPropsTyp
           Completed
         </Button>
       </div>
-      {tasksLoadingStatus === "loading" ? (
+      {todoList.entityStatus === "loading" ? (
         <TasksPreloader />
       ) : (
         <ul>

@@ -1,5 +1,7 @@
 import {
   AddTodolistAT,
+  changeTodoListEntityStatusAC,
+  changeTodoListEntityStatusAT,
   RemoveTodolistAT,
   SetTodoListsAT,
   TodolistsActionTypes,
@@ -14,13 +16,15 @@ import {
 import { ThunkAction } from "redux-thunk";
 import { AppRootStateT } from "../../app/store";
 import {
-  setAppErrorAC,
   SetAppErrorAT,
+  setAppStatusAC,
   setAppStatusAT,
-  setTasksLoadStatusAC,
-  setTasksLoadStatusAT,
+  StatusT,
 } from "../../app/app-reducer";
-import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
+import {
+  handleServerAppError,
+  handleServerNetworkError,
+} from "../../utils/error-utils";
 
 // * types
 type ActionsT =
@@ -30,29 +34,36 @@ type ActionsT =
   | AddTodolistAT
   | RemoveTodolistAT
   | SetTodoListsAT
-  | SetTasksAT;
+  | SetTasksAT
+  | setTaskLoadingStatusAT;
 
 enum TasksActionsTypes {
   REMOVE_TASK = "REMOVE-TASK",
   ADD_TASK = "ADD-TASK",
   UPDATE_TASK = "CHANGE-TASK-STATUS",
   SET_TASKS = "SET-TASKS",
+  SET_TASK_LOADING_STATUS = "SET-TASK-LOADING-STATUS",
 }
 
 export type RemoveTaskAT = ReturnType<typeof removeTaskAC>;
 export type AddTaskAT = ReturnType<typeof addTaskAC>;
 export type UpdateTaskAT = ReturnType<typeof updateTaskAC>;
 export type SetTasksAT = ReturnType<typeof setTasksAC>;
+export type setTaskLoadingStatusAT = ReturnType<typeof setTaskLoadingStatusAC>;
 
 export type TasksThunkT<ReturnType = void> = ThunkAction<
   ReturnType,
   AppRootStateT,
   unknown,
-  ActionsT | SetAppErrorAT | setTasksLoadStatusAT
+  ActionsT | SetAppErrorAT | setAppStatusAT | changeTodoListEntityStatusAT
 >;
 
 export type TaskStateT = {
-  [key: string]: Array<TaskT>;
+  [key: string]: Array<TaskDomainT>;
+};
+
+export type TaskDomainT = TaskT & {
+  entityTaskStatus: StatusT;
 };
 
 export type UpdateDomainTaskModelT = {
@@ -71,7 +82,13 @@ export const tasksReducer = (
   state: TaskStateT = initialState,
   action: ActionsT
 ): TaskStateT => {
-  const { REMOVE_TASK, ADD_TASK, UPDATE_TASK, SET_TASKS } = TasksActionsTypes;
+  const {
+    REMOVE_TASK,
+    ADD_TASK,
+    UPDATE_TASK,
+    SET_TASKS,
+    SET_TASK_LOADING_STATUS,
+  } = TasksActionsTypes;
 
   switch (action.type) {
     case REMOVE_TASK: {
@@ -86,7 +103,10 @@ export const tasksReducer = (
       const { task } = action;
       return {
         ...state,
-        [task.todoListId]: [task, ...state[task.todoListId]],
+        [task.todoListId]: [
+          { ...task, entityTaskStatus: "idle" },
+          ...state[task.todoListId],
+        ],
       };
     }
     case UPDATE_TASK: {
@@ -119,7 +139,23 @@ export const tasksReducer = (
     case SET_TASKS: {
       return {
         ...state,
-        [action.todoListID]: action.tasks,
+        [action.todoListID]: action.tasks.map((t) => ({
+          ...t,
+          entityTaskStatus: "idle",
+        })),
+      };
+    }
+    case SET_TASK_LOADING_STATUS: {
+      return {
+        ...state,
+        [action.todoListID]: state[action.todoListID].map((t) =>
+          t.id === action.taskId
+            ? {
+                ...t,
+                entityTaskStatus: action.taskLoadingStatus,
+              }
+            : t
+        ),
       };
     }
     default:
@@ -164,42 +200,65 @@ export const setTasksAC = (todoListID: string, tasks: Array<TaskT>) => {
   } as const;
 };
 
+export const setTaskLoadingStatusAC = (
+  taskId: string,
+  todoListID: string,
+  taskLoadingStatus: StatusT
+) => {
+  return {
+    type: TasksActionsTypes.SET_TASK_LOADING_STATUS,
+    taskId,
+    todoListID,
+    taskLoadingStatus,
+  } as const;
+};
+
 //* Thunks
-export const fetchTasks = (TodoListId: string): TasksThunkT => (dispatch) => {
-  dispatch(setTasksLoadStatusAC("loading"));
-  todoListsAPI.getTasks(TodoListId).then((res) => {
-    dispatch(setTasksAC(TodoListId, res.data.items));
-    dispatch(setTasksLoadStatusAC("idle"));
-  });
+export const fetchTasks = (todoListId: string): TasksThunkT => (
+  dispatch,
+  getState
+) => {
+  dispatch(setAppStatusAC("loading"));
+  dispatch(changeTodoListEntityStatusAC(todoListId, "loading"));
+  todoListsAPI
+    .getTasks(todoListId)
+    .then((res) => {
+      dispatch(setTasksAC(todoListId, res.data.items));
+      dispatch(setAppStatusAC("succeeded"));
+      dispatch(changeTodoListEntityStatusAC(todoListId, "succeeded"));
+    })
+    .catch((err) => handleServerNetworkError(err, dispatch));
 };
 
 export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (
   dispatch
 ) => {
-  dispatch(setTasksLoadStatusAC("loading"));
+  dispatch(setAppStatusAC("loading"));
+  dispatch(setTaskLoadingStatusAC(taskId, todoListId, "loading"));
+
   todoListsAPI.deleteTask(taskId, todoListId).then(() => {
     dispatch(removeTaskAC(taskId, todoListId));
-    dispatch(setTasksLoadStatusAC("succeeded"));
+    dispatch(setAppStatusAC("succeeded"));
   });
 };
 
 export const createTask = (todoListId: string, title: string): TasksThunkT => (
   dispatch
 ) => {
-  dispatch(setTasksLoadStatusAC("loading"));
+  dispatch(setAppStatusAC("loading"));
+  dispatch(changeTodoListEntityStatusAC(todoListId, "loading"));
   todoListsAPI
     .createTask(todoListId, title)
     .then((res) => {
       if (res.data.resultCode === 0) {
         dispatch(addTaskAC(res.data.data.item));
-        dispatch(setTasksLoadStatusAC("succeeded"));
+        dispatch(setAppStatusAC("succeeded"));
+        dispatch(changeTodoListEntityStatusAC(todoListId, "succeeded"));
       } else {
         handleServerAppError(res.data, dispatch);
       }
     })
-    .catch((err) => {
-      handleServerNetworkError(err, dispatch);
-    });
+    .catch((err) => handleServerNetworkError(err, dispatch));
 };
 
 export const updateTask = (
@@ -227,13 +286,11 @@ export const updateTask = (
   todoListsAPI
     .updateTask(taskId, todoListId, apiModel)
     .then((res) => {
-      if(res.data.resultCode === 0) {
+      if (res.data.resultCode === 0) {
         dispatch(updateTaskAC(taskId, todoListId, domainModel));
       } else {
         handleServerAppError(res.data, dispatch);
       }
     })
-      .catch((err) => {
-        handleServerNetworkError(err, dispatch);
-      });
+    .catch((err) => handleServerNetworkError(err, dispatch));
 };

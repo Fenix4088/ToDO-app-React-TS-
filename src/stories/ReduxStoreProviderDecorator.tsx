@@ -39,6 +39,7 @@ const initialGlobalState = {
       {
         id: v1(),
         title: "HTML&CSS",
+        entityTaskStatus: "idle",
         status: TaskStatuses.New,
         description: "",
         priority: TaskPriorities.Low,
@@ -51,6 +52,7 @@ const initialGlobalState = {
       {
         id: v1(),
         title: "JS",
+        entityTaskStatus: "idle",
         status: TaskStatuses.Completed,
         description: "",
         priority: TaskPriorities.Low,
@@ -65,6 +67,7 @@ const initialGlobalState = {
       {
         id: v1(),
         title: "Milk",
+        entityTaskStatus: "idle",
         status: TaskStatuses.New,
         description: "",
         priority: TaskPriorities.Low,
@@ -77,6 +80,7 @@ const initialGlobalState = {
       {
         id: v1(),
         title: "React Book",
+        entityTaskStatus: "idle",
         status: TaskStatuses.Completed,
         description: "",
         priority: TaskPriorities.Low,

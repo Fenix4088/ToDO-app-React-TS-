@@ -3,7 +3,7 @@ import {
   updateTaskAC,
   removeTaskAC, setTasksAC,
   tasksReducer,
-  TaskStateT,
+  TaskStateT, setTaskLoadingStatusAC,
 } from "./tasks-reducer";
 import {
   addTodolistAC,
@@ -24,6 +24,7 @@ beforeEach(function () {
         id: "1",
         title: "CSS",
         status: TaskStatuses.New,
+        entityTaskStatus: "idle",
         description: "",
         priority: 0,
         startDate: "",
@@ -36,6 +37,7 @@ beforeEach(function () {
         id: "2",
         title: "JS",
         status: TaskStatuses.Completed,
+        entityTaskStatus: "idle",
         description: "",
         priority: 0,
         startDate: "",
@@ -48,6 +50,7 @@ beforeEach(function () {
         id: "3",
         title: "React",
         status: TaskStatuses.New,
+        entityTaskStatus: "idle",
         description: "",
         priority: 0,
         startDate: "",
@@ -62,6 +65,7 @@ beforeEach(function () {
         id: "1",
         title: "bread",
         status: TaskStatuses.New,
+        entityTaskStatus: "idle",
         description: "",
         priority: 0,
         startDate: "",
@@ -74,6 +78,7 @@ beforeEach(function () {
         id: "2",
         title: "milk",
         status: TaskStatuses.Completed,
+        entityTaskStatus: "idle",
         description: "",
         priority: 0,
         startDate: "",
@@ -86,6 +91,7 @@ beforeEach(function () {
         id: "3",
         title: "tea",
         status: TaskStatuses.New,
+        entityTaskStatus: "idle",
         description: "",
         priority: 0,
         startDate: "",
@@ -145,7 +151,6 @@ test("status of specified task should be changed", () => {
   });
 
   const endState = tasksReducer(startState, action);
-  console.log(endState)
   expect(endState[todoListId2].length).toBe(endState[todoListId2].length)
 
   expect(endState[todoListId2].length === startState[todoListId2].length).toBeTruthy();
@@ -207,5 +212,17 @@ test("tasks should be added to TodoList", () => {
 
   expect(endState[todoListId1].length).toBe(3);
   expect(endState[todoListId2].length).toBe(0);
+
+});
+
+test("task entity status should be changed", () => {
+  const action = setTaskLoadingStatusAC("1", todoListId1, "loading");
+
+  const endState = tasksReducer(startState, action);
+
+  expect(endState === startState).toBeFalsy();
+  expect(endState[todoListId1].length === startState[todoListId1].length).toBeTruthy();
+  expect(startState[todoListId1][0].entityTaskStatus === endState[todoListId1][0].entityTaskStatus).toBeFalsy();
+  expect(endState[todoListId1][0].entityTaskStatus).toBe("loading");
 
 });

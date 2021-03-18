@@ -5,22 +5,27 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 type EditableSpanPropsType = {
   taskTitle: string;
   changeTitle: (newTitle: string) => void;
+  disabled?: boolean
 };
 
-const useStyles = makeStyles({
-  input: {
-    width: "70%",
-  },
-  editableSpan: {
-    display: "inline-flex",
-    justifyContent: "center",
-    alignItems: "center",
-    maxWidth: "70%",
-    overflowWrap: "anywhere",
-  },
-});
+
 
 export const EditableSpan = React.memo((props: EditableSpanPropsType) => {
+  const useStyles = makeStyles({
+    input: {
+      width: "70%",
+    },
+    editableSpan: {
+      display: "inline-flex",
+      justifyContent: "center",
+      alignItems: "center",
+      maxWidth: "70%",
+      overflowWrap: "anywhere",
+      opacity: `${props.disabled ? "0.5" : "1"}`
+    },
+  });
+
+
   const { changeTitle, taskTitle } = props;
   const classes = useStyles();
 
@@ -48,7 +53,7 @@ export const EditableSpan = React.memo((props: EditableSpanPropsType) => {
       autoFocus
     />
   ) : (
-    <span onDoubleClick={onEditMode} className={classes.editableSpan}>
+    <span onDoubleClick={onEditMode} className={classes.editableSpan} >
       {taskTitle}
     </span>
   );

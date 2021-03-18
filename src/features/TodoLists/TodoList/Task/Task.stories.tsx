@@ -19,6 +19,7 @@ export const TaskBaseExample = () => {
           id: "1",
           title: "New storybook syntax",
           status: TaskStatuses.Completed,
+          entityTaskStatus: "idle",
           description: "",
           priority: TaskPriorities.Low,
           startDate: "",
@@ -35,6 +36,7 @@ export const TaskBaseExample = () => {
 
           title: "New storybook syntax",
           status: TaskStatuses.Completed,
+          entityTaskStatus: "idle",
           description: "",
           priority: TaskPriorities.Low,
           startDate: "",
@@ -57,6 +59,7 @@ const Template: Story<TodoListItemType> = (args) => {
           id: "3",
           title: "New storybook syntax",
           status: TaskStatuses.New,
+          entityTaskStatus: "idle",
           description: "",
           priority: TaskPriorities.Low,
           startDate: "",
@@ -73,6 +76,7 @@ const Template: Story<TodoListItemType> = (args) => {
 
           title: "New storybook syntax",
           status: TaskStatuses.Completed,
+          entityTaskStatus: "idle",
           description: "",
           priority: TaskPriorities.Low,
           startDate: "",
@@ -89,21 +93,11 @@ const Template: Story<TodoListItemType> = (args) => {
 export const Together1 = Template.bind({});
 Together1.args = {
   todoListId: "todoListId1",
-  /*  task: {
-          id: "3",
-          title: "New storybook syntax",
-          isDone: true,
-        },*/
 };
 
 export const Together2 = Template.bind({});
 Together2.args = {
   todoListId: "todoListId1",
-  /*    task: {
-              id: "3",
-              title: "New storybook syntax",
-              isDone: false,
-          },*/
 };
 
 const Template2: Story<TodoListItemType> = (args) => <Task {...args} />;
@@ -115,6 +109,7 @@ Separate1.args = {
     id: "3",
     title: "New storybook syntax",
     status: TaskStatuses.New,
+    entityTaskStatus: "idle",
     description: "",
     priority: TaskPriorities.Low,
     startDate: "",
@@ -132,6 +127,7 @@ Separate2.args = {
     id: "3",
     title: "New storybook syntax",
     status: TaskStatuses.Completed,
+    entityTaskStatus: "idle",
     description: "",
     priority: TaskPriorities.Low,
     startDate: "",

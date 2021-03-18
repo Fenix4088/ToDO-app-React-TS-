@@ -19,6 +19,8 @@ import {
   SetAppErrorAT,
   setAppStatusAC,
   setAppStatusAT,
+  setAppSuccessAC,
+  setAppSuccessAT,
   StatusT,
 } from "../../app/app-reducer";
 import {
@@ -55,7 +57,11 @@ export type TasksThunkT<ReturnType = void> = ThunkAction<
   ReturnType,
   AppRootStateT,
   unknown,
-  ActionsT | SetAppErrorAT | setAppStatusAT | changeTodoListEntityStatusAT
+  | ActionsT
+  | SetAppErrorAT
+  | setAppStatusAT
+  | changeTodoListEntityStatusAT
+  | setAppSuccessAT
 >;
 
 export type TaskStateT = {
@@ -214,10 +220,7 @@ export const setTaskLoadingStatusAC = (
 };
 
 //* Thunks
-export const fetchTasks = (todoListId: string): TasksThunkT => (
-  dispatch,
-  getState
-) => {
+export const fetchTasks = (todoListId: string): TasksThunkT => (dispatch) => {
   dispatch(setAppStatusAC("loading"));
   dispatch(changeTodoListEntityStatusAC(todoListId, "loading"));
   todoListsAPI
@@ -236,10 +239,14 @@ export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (
   dispatch(setAppStatusAC("loading"));
   dispatch(setTaskLoadingStatusAC(taskId, todoListId, "loading"));
 
-  todoListsAPI.deleteTask(taskId, todoListId).then(() => {
-    dispatch(removeTaskAC(taskId, todoListId));
-    dispatch(setAppStatusAC("succeeded"));
-  });
+  todoListsAPI
+    .deleteTask(taskId, todoListId)
+    .then(() => {
+      dispatch(removeTaskAC(taskId, todoListId));
+      dispatch(setAppStatusAC("succeeded"));
+      dispatch(setAppSuccessAC("Task was deleted!"));
+    })
+    .catch((err) => handleServerNetworkError(err, dispatch));
 };
 
 export const createTask = (todoListId: string, title: string): TasksThunkT => (
@@ -254,11 +261,16 @@ export const createTask = (todoListId: string, title: string): TasksThunkT => (
         dispatch(addTaskAC(res.data.data.item));
         dispatch(setAppStatusAC("succeeded"));
         dispatch(changeTodoListEntityStatusAC(todoListId, "succeeded"));
+        dispatch(setAppSuccessAC("Task was added!"));
       } else {
         handleServerAppError(res.data, dispatch);
+        dispatch(changeTodoListEntityStatusAC(todoListId, "failed"));
       }
     })
-    .catch((err) => handleServerNetworkError(err, dispatch));
+    .catch((err) => {
+      handleServerNetworkError(err, dispatch);
+      dispatch(changeTodoListEntityStatusAC(todoListId, "failed"));
+    });
 };
 
 export const updateTask = (
@@ -289,6 +301,7 @@ export const updateTask = (
     .then((res) => {
       if (res.data.resultCode === 0) {
         dispatch(updateTaskAC(taskId, todoListId, domainModel));
+        dispatch(setAppSuccessAC("Task was updated!"));
       } else {
         handleServerAppError(res.data, dispatch);
       }

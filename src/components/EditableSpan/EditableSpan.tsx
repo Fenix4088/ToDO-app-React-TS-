@@ -32,7 +32,10 @@ export const EditableSpan = React.memo((props: EditableSpanPropsType) => {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [title, setTitle] = useState<string>(taskTitle);
 
-  const onEditMode = () => setEditMode(true);
+  const onEditMode = () => {
+    if(props.disabled) return;
+    setEditMode(true);
+  };
 
   const offEditMode = useCallback(() => {
     setEditMode(false);

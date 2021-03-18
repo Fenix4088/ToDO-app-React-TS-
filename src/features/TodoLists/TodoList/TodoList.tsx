@@ -96,6 +96,7 @@ export const TodoList = React.memo(({ demo = false, ...props} : TodoListPropsTyp
         <EditableSpan
           taskTitle={todoList.title}
           changeTitle={changeTodoListTitle}
+          disabled={todoList.entityStatus === "loading"}
         />
         <IconButton onClick={removeTodoList} disabled={todoList.entityStatus === "loading"}>
           <Delete />

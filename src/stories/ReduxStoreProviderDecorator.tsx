@@ -94,8 +94,10 @@ const initialGlobalState = {
   },
   app: {
     status: "idle",
-    error: null,
-    tasksLoadStatus: "idle",
+    appActionStatus: {
+      error: null,
+      success: null,
+    },
   }
 };
 

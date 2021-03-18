@@ -15,9 +15,12 @@ import { ThunkAction } from "redux-thunk";
 import { AppRootStateT } from "../../app/store";
 import {
   setAppErrorAC,
-  SetAppErrorAT, setAppStatusAT, setTasksLoadStatusAC,
+  SetAppErrorAT,
+  setAppStatusAT,
+  setTasksLoadStatusAC,
   setTasksLoadStatusAT,
 } from "../../app/app-reducer";
+import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
 
 // * types
 type ActionsT =
@@ -164,12 +167,10 @@ export const setTasksAC = (todoListID: string, tasks: Array<TaskT>) => {
 //* Thunks
 export const fetchTasks = (TodoListId: string): TasksThunkT => (dispatch) => {
   dispatch(setTasksLoadStatusAC("loading"));
-  todoListsAPI
-    .getTasks(TodoListId)
-    .then((res) => {
-      dispatch(setTasksAC(TodoListId, res.data.items));
-      dispatch(setTasksLoadStatusAC("idle"));
-    });
+  todoListsAPI.getTasks(TodoListId).then((res) => {
+    dispatch(setTasksAC(TodoListId, res.data.items));
+    dispatch(setTasksLoadStatusAC("idle"));
+  });
 };
 
 export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (
@@ -186,19 +187,19 @@ export const createTask = (todoListId: string, title: string): TasksThunkT => (
   dispatch
 ) => {
   dispatch(setTasksLoadStatusAC("loading"));
-  todoListsAPI.createTask(todoListId, title).then((res) => {
-    if (res.data.resultCode === 0) {
-      dispatch(addTaskAC(res.data.data.item));
-      dispatch(setTasksLoadStatusAC("succeeded"));
-    } else {
-      if (res.data.messages[0]) {
-        dispatch(setAppErrorAC(res.data.messages[0]));
+  todoListsAPI
+    .createTask(todoListId, title)
+    .then((res) => {
+      if (res.data.resultCode === 0) {
+        dispatch(addTaskAC(res.data.data.item));
+        dispatch(setTasksLoadStatusAC("succeeded"));
       } else {
-        dispatch(setAppErrorAC("Unknown error :-("));
+        handleServerAppError(res.data, dispatch);
       }
-      dispatch(setTasksLoadStatusAC("failed"));
-    }
-  });
+    })
+    .catch((err) => {
+      handleServerNetworkError(err, dispatch);
+    });
 };
 
 export const updateTask = (
@@ -225,5 +226,14 @@ export const updateTask = (
 
   todoListsAPI
     .updateTask(taskId, todoListId, apiModel)
-    .then(() => dispatch(updateTaskAC(taskId, todoListId, domainModel)));
+    .then((res) => {
+      if(res.data.resultCode === 0) {
+        dispatch(updateTaskAC(taskId, todoListId, domainModel));
+      } else {
+        handleServerAppError(res.data, dispatch);
+      }
+    })
+      .catch((err) => {
+        handleServerNetworkError(err, dispatch);
+      });
 };

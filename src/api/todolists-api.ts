@@ -8,7 +8,7 @@ export type TodolistT = {
   order: number;
 };
 
-type ResponseT<D = {}> = {
+export type ResponseT<D = {}> = {
   resultCode: number;
   messages: Array<string>;
   data: D;

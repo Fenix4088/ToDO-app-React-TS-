@@ -13,10 +13,10 @@ enum appActionsConst {
     APP_SET_TASK_LOAD_STATUS = "APP/APP-SET-TASK-LOAD-STATUS"
 }
 
-type ActionsT = SetErrorAT | setStatusAT | setTasksLoadStatusAT;
+type ActionsT = SetAppErrorAT | setAppStatusAT | setTasksLoadStatusAT;
 
-export type SetErrorAT = ReturnType<typeof setErrorAC>
-export type setStatusAT = ReturnType<typeof setStatusAC>
+export type SetAppErrorAT = ReturnType<typeof setAppErrorAC>
+export type setAppStatusAT = ReturnType<typeof setAppStatusAC>
 export type setTasksLoadStatusAT = ReturnType<typeof setTasksLoadStatusAC>
 
 // * reducer
@@ -46,14 +46,14 @@ export const appReducer = (state: InitialStateT = initialState, action: ActionsT
 }
 
 // * AC
-export const setErrorAC = (error: string | null) => {
+export const setAppErrorAC = (error: string | null) => {
     return {
         type: appActionsConst.APP_SET_ERROR,
         error
     } as const;
 }
 
-export const setStatusAC = (status: StatusT) => {
+export const setAppStatusAC = (status: StatusT) => {
     return {
         type: appActionsConst.APP_SET_STATUS,
         status

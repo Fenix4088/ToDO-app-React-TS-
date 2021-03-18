@@ -14,8 +14,8 @@ import {
 import { ThunkAction } from "redux-thunk";
 import { AppRootStateT } from "../../app/store";
 import {
-  setErrorAC,
-  SetErrorAT, setStatusAT, setTasksLoadStatusAC,
+  setAppErrorAC,
+  SetAppErrorAT, setAppStatusAT, setTasksLoadStatusAC,
   setTasksLoadStatusAT,
 } from "../../app/app-reducer";
 
@@ -45,7 +45,7 @@ export type TasksThunkT<ReturnType = void> = ThunkAction<
   ReturnType,
   AppRootStateT,
   unknown,
-  ActionsT | SetErrorAT | setTasksLoadStatusAT
+  ActionsT | SetAppErrorAT | setTasksLoadStatusAT
 >;
 
 export type TaskStateT = {
@@ -192,9 +192,9 @@ export const createTask = (todoListId: string, title: string): TasksThunkT => (
       dispatch(setTasksLoadStatusAC("succeeded"));
     } else {
       if (res.data.messages[0]) {
-        dispatch(setErrorAC(res.data.messages[0]));
+        dispatch(setAppErrorAC(res.data.messages[0]));
       } else {
-        dispatch(setErrorAC("Unknown error :-("));
+        dispatch(setAppErrorAC("Unknown error :-("));
       }
       dispatch(setTasksLoadStatusAC("failed"));
     }

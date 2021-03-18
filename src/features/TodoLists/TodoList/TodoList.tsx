@@ -21,9 +21,11 @@ import { StatusT } from "../../../app/app-reducer";
 
 type TodoListPropsType = {
   todoListId: string;
+  demo?: boolean;
 };
 
-export const TodoList = React.memo((props: TodoListPropsType) => {
+export const TodoList = React.memo(({ demo = false, ...props} : TodoListPropsType) => {
+
   const todoList = useSelector<AppRootStateT, TodolistDomainT>(
     (state) => state.todoLists.filter((tl) => props.todoListId === tl.id)[0]
   );
@@ -38,7 +40,10 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if(demo) return;
+
     dispatch(fetchTasks(todoList.id));
+
   }, [dispatch, todoList.id]);
 
   let tasksForTodoList = useMemo(() => {
@@ -96,11 +101,11 @@ export const TodoList = React.memo((props: TodoListPropsType) => {
           taskTitle={todoList.title}
           changeTitle={changeTodoListTitle}
         />
-        <IconButton onClick={removeTodoList}>
+        <IconButton onClick={removeTodoList} disabled={todoList.entityStatus === "loading"}>
           <Delete />
         </IconButton>
       </h3>
-      <AddItemForm addItem={addTask} />
+      <AddItemForm addItem={addTask} disabled={todoList.entityStatus === "loading"}/>
       <div className={s.btnGroup}>
         <Button
           variant={todoList.filter === "all" ? "outlined" : "contained"}

@@ -23,7 +23,11 @@ import { AppRootStateT } from "./store";
 import {CustomizedSnackbars} from "../components/ErrorSnackbar/ErrorSnackBar";
 import {StatusT} from "./app-reducer";
 
-function App() {
+type AppPropsT = {
+  demo?: boolean;
+}
+
+function App({demo = false, ...props}: AppPropsT) {
   const todoLists = useSelector<AppRootStateT, Array<TodolistDomainT>>(
     (state) => state.todoLists
   );
@@ -31,6 +35,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if(demo) return;
     dispatch(fetchTodoListsTC());
   }, [dispatch]);
 
@@ -74,7 +79,7 @@ function App() {
             return (
               <Grid item key={todoList.id}>
                 <Paper elevation={5} style={{ padding: "20px 10px" }}>
-                  <TodoList key={todoList.id} todoListId={todoList.id} />
+                  <TodoList demo={demo} key={todoList.id} todoListId={todoList.id} />
                 </Paper>
               </Grid>
             );

@@ -1,4 +1,4 @@
-import {appReducer, InitialStateT, setErrorAC, setStatusAC, StatusT} from "./app-reducer";
+import {appReducer, InitialStateT, setAppErrorAC, setAppStatusAC, StatusT} from "./app-reducer";
 
 let startState: InitialStateT;
 
@@ -10,7 +10,7 @@ beforeEach(function () {
 });
 
 test("should set error", () => {
-    const action = setErrorAC("Error");
+    const action = setAppErrorAC("Error");
     const endState = appReducer(startState, action);
 
     expect(endState !== startState).toBeTruthy();
@@ -19,7 +19,7 @@ test("should set error", () => {
 });
 
 test("should set status", () => {
-    const action = setStatusAC("loading");
+    const action = setAppStatusAC("loading");
     const endState = appReducer(startState, action);
 
     expect(endState !== startState).toBeTruthy();

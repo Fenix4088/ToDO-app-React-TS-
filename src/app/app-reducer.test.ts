@@ -1,11 +1,14 @@
-import {appReducer, InitialStateT, setAppErrorAC, setAppStatusAC, StatusT} from "./app-reducer";
+import {appReducer, InitialStateT, setAppErrorAC, setAppStatusAC, setAppSuccessAC} from "./app-reducer";
 
 let startState: InitialStateT;
 
 beforeEach(function () {
     startState = {
         status: "idle",
-        error: null,
+        appActionStatus: {
+            error: null,
+            success: null,
+        },
     };
 });
 
@@ -14,8 +17,17 @@ test("should set error", () => {
     const endState = appReducer(startState, action);
 
     expect(endState !== startState).toBeTruthy();
-    expect(endState.error).toBe("Error");
-    expect(typeof endState.error).toBe("string");
+    expect(endState.appActionStatus.error).toBe("Error");
+    expect(typeof endState.appActionStatus.error).toBe("string");
+});
+
+test("should set success", () => {
+    const action = setAppSuccessAC("Success");
+    const endState = appReducer(startState, action);
+
+    expect(endState !== startState).toBeTruthy();
+    expect(endState.appActionStatus.success).toBe("Success");
+    expect(typeof endState.appActionStatus.success).toBe("string");
 });
 
 test("should set status", () => {
@@ -26,6 +38,8 @@ test("should set status", () => {
     expect(endState.status).toBe("loading");
     expect(typeof endState.status).toBe("string");
 });
+
+
 
 
 

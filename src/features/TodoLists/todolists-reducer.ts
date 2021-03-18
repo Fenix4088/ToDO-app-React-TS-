@@ -199,7 +199,7 @@ export const createTodoList = (title: string): TodoListThunkT => (dispatch) => {
     .then((res) => {
       dispatch(addTodolistAC(res.data.data.item));
       dispatch(setAppStatusAC("succeeded"));
-      dispatch(setAppSuccessAC("Todolist was added"));
+      dispatch(setAppSuccessAC("Todolist was added!"));
     })
     .catch((err) => {
       handleServerNetworkError(err, dispatch);

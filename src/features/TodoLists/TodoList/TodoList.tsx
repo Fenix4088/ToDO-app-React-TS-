@@ -16,7 +16,7 @@ import {
   updateTodoList,
 } from "../todolists-reducer";
 import { TaskStatuses, TaskT } from "../../../api/todolists-api";
-import { TasksPreloader } from "../../../components/TasksPreloader/TaskspPreloader";
+import { TasksPreloader } from "../../../components/TasksPreloader/TasksPreloader";
 import { StatusT } from "../../../app/app-reducer";
 
 type TodoListPropsType = {

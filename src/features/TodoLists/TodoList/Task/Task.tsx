@@ -1,12 +1,12 @@
-import React, {ChangeEvent, CSSProperties, useCallback} from "react";
+import React, {ChangeEvent, useCallback} from "react";
 import { EditableSpan } from "../../../../components/EditableSpan/EditableSpan";
 import { Box, Checkbox, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { deleteTask, TaskDomainT, updateTask } from "../../tasks-reducer";
-import { useDispatch, useSelector } from "react-redux";
-import { TaskStatuses, TaskT } from "../../../../api/todolists-api";
-import { TasksPreloader } from "../../../../components/TasksPreloader/TaskspPreloader";
+import { useDispatch } from "react-redux";
+import { TaskStatuses } from "../../../../api/todolists-api";
+import { TasksPreloader } from "../../../../components/TasksPreloader/TasksPreloader";
 
 export type TodoListItemType = {
   todoListId: string;

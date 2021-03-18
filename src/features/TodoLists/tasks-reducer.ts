@@ -269,6 +269,7 @@ export const updateTask = (
   const state = getState();
   const task = state.tasks[todoListId].find((t) => t.id === taskId);
 
+  dispatch(setTaskLoadingStatusAC(taskId, todoListId, "loading"));
   if (!task) {
     throw new Error("Task no found in the STATE");
   }
@@ -291,6 +292,7 @@ export const updateTask = (
       } else {
         handleServerAppError(res.data, dispatch);
       }
+      dispatch(setTaskLoadingStatusAC(taskId, todoListId, "succeeded"));
     })
     .catch((err) => handleServerNetworkError(err, dispatch));
 };

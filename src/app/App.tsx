@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from "react";
 import "./App.css";
-import { TodoList } from "../features/TodoLists/TodoList/TodoList";
 import { AddItemForm } from "../components/AddItemForm/AddItemFrom";
 import {
   AppBar,
@@ -10,27 +9,25 @@ import {
   Toolbar,
   Container,
   Grid,
-  Paper, LinearProgress,
+ LinearProgress,
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import {
   createTodoList,
   fetchTodoListsTC,
-  TodolistDomainT,
 } from "../features/TodoLists/todolists-reducer";
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./store";
 import {CustomizedSnackbars} from "../components/ErrorSnackbar/ErrorSnackBar";
 import {StatusT} from "./app-reducer";
+import {TodolistsList} from "../features/TodolistsList/TodolistLists";
 
 type AppPropsT = {
   demo?: boolean;
 }
 
-function App({demo = false, ...props}: AppPropsT) {
-  const todoLists = useSelector<AppRootStateT, Array<TodolistDomainT>>(
-    (state) => state.todoLists
-  );
+function App({demo = false}: AppPropsT) {
+
   const appStatus = useSelector<AppRootStateT, StatusT>(state => state.app.status)
   const dispatch = useDispatch();
 
@@ -74,17 +71,8 @@ function App({demo = false, ...props}: AppPropsT) {
           />
         </Grid>
 
-        <Grid container spacing={3}>
-          {todoLists.map((todoList) => {
-            return (
-              <Grid item key={todoList.id}>
-                <Paper elevation={5} style={{ padding: "20px 10px" }}>
-                  <TodoList demo={demo} key={todoList.id} todoListId={todoList.id} />
-                </Paper>
-              </Grid>
-            );
-          })}
-        </Grid>
+        <TodolistsList demo={demo}/>
+
       </Container>
     </div>
   );

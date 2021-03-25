@@ -21,10 +21,11 @@ import { StatusT } from "../../../app/app-reducer";
 
 type TodoListPropsType = {
   todoListId: string;
+  isLoggedIn: boolean;
   demo?: boolean;
 };
 
-export const TodoList = React.memo(({ demo = false, ...props} : TodoListPropsType) => {
+export const TodoList = React.memo(({ demo = false, isLoggedIn, ...props} : TodoListPropsType) => {
 
   const todoList = useSelector<AppRootStateT, TodolistDomainT>(
     (state) => state.todoLists.filter((tl) => props.todoListId === tl.id)[0]

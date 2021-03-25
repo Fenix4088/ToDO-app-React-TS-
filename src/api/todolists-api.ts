@@ -116,3 +116,23 @@ export const todoListsAPI = {
     );
   },
 };
+
+export type LoginParamsT = {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+  captcha?: string;
+};
+export const authAPI = {
+  login(data: LoginParamsT) {
+    return instance.post<ResponseT<{ userId?: number }>>("auth/login", data);
+  },
+  logout() {
+    return instance.delete<ResponseT<{ userId?: number }>>("auth/login");
+  },
+  me() {
+    return instance.get<
+      ResponseT<{ id: number; email: string; login: string }>
+    >("auth/me");
+  },
+};

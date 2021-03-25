@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from "react";
+import React, {useCallback, useEffect} from "react";
+import { Route } from "react-router";
 import "./App.css";
-import { AddItemForm } from "../components/AddItemForm/AddItemFrom";
 import {
   AppBar,
   Button,
@@ -8,40 +8,60 @@ import {
   Typography,
   Toolbar,
   Container,
-  Grid,
- LinearProgress,
+  LinearProgress,
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
 import {
-  createTodoList,
   fetchTodoListsTC,
 } from "../features/TodoLists/todolists-reducer";
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./store";
-import {CustomizedSnackbars} from "../components/ErrorSnackbar/ErrorSnackBar";
-import {StatusT} from "./app-reducer";
-import {TodolistsList} from "../features/TodolistsList/TodolistLists";
+import { CustomizedSnackbars } from "../components/ErrorSnackbar/ErrorSnackBar";
+import {initializeAppTC, StatusT} from "./app-reducer";
+import { TodolistsList } from "../features/TodolistsList/TodolistLists";
+import { Login } from "../features/Login/Login";
+import {TasksPreloader} from "../components/TasksPreloader/TasksPreloader";
+import {logoutTC} from "../features/Login/auth-reducer";
 
 type AppPropsT = {
   demo?: boolean;
-}
+};
 
-function App({demo = false}: AppPropsT) {
+function App({ demo = false }: AppPropsT) {
+  const appStatus = useSelector<AppRootStateT, StatusT>(
+    (state) => state.app.status
+  );
+  const isInitialized = useSelector<AppRootStateT, boolean>(
+    (state) => state.app.isInitialized
+  );
 
-  const appStatus = useSelector<AppRootStateT, StatusT>(state => state.app.status)
+  const isLoggedIn = useSelector<AppRootStateT, boolean>(
+      (state) => state.login.isLoggedIn
+  );
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(demo) return;
+    dispatch(initializeAppTC())
+  }, [])
+
+  useEffect(() => {
+    if (demo) return;
     dispatch(fetchTodoListsTC());
   }, [dispatch]);
 
-  const addTodoList = useCallback(
-    (todoListTitle: string): void => {
-      dispatch(createTodoList(todoListTitle));
-    },
-    [dispatch]
-  );
+  const logoutHandler = useCallback(() => {
+    dispatch(logoutTC())
+  }, []);
+
+  if(!isInitialized) {
+      return <div style={{position: "fixed", top: "30%", left: "42%", width: "100%"}}>
+        <TasksPreloader size={"200"} type={"circle"}/>
+      </div>;
+  }
+
+
+
 
   return (
     <div className="App">
@@ -51,28 +71,16 @@ function App({demo = false}: AppPropsT) {
             <Menu />
           </IconButton>
           <Typography variant="h6">News</Typography>
-          <Button color="inherit">Login</Button>
+          {isLoggedIn && <Button color="inherit" onClick={logoutHandler}>Log out</Button>}
         </Toolbar>
-        {appStatus === "loading" && <LinearProgress color="secondary"/>}
+        {appStatus === "loading" && <LinearProgress color="secondary" />}
 
-        <CustomizedSnackbars/>
+        <CustomizedSnackbars />
       </AppBar>
 
       <Container>
-        <Grid
-          container
-          style={{ padding: "10px" }}
-          justify="center"
-          alignItems="center"
-        >
-          <AddItemForm
-            addItem={addTodoList}
-            placeholder={"Enter Todo List name..."}
-          />
-        </Grid>
-
-        <TodolistsList demo={demo}/>
-
+        <Route path={"/"} exact render={() => <TodolistsList demo={demo} />} />
+        <Route path={"/login"} render={() => <Login />} />
       </Container>
     </div>
   );

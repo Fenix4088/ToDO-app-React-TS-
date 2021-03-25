@@ -9,7 +9,6 @@ import {
   StatusT,
 } from "../../app/app-reducer";
 import {
-  handleServerAppError,
   handleServerNetworkError,
 } from "../../utils/error-utils";
 

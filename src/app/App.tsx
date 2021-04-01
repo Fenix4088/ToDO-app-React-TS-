@@ -11,9 +11,6 @@ import {
   LinearProgress,
 } from "@material-ui/core";
 import { Menu } from "@material-ui/icons";
-import {
-  fetchTodoListsTC,
-} from "../features/TodoLists/todolists-reducer";
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./store";
 import { CustomizedSnackbars } from "../components/ErrorSnackbar/ErrorSnackBar";
@@ -22,6 +19,7 @@ import { TodolistsList } from "../features/TodolistsList/TodolistLists";
 import { Login } from "../features/Login/Login";
 import {TasksPreloader} from "../components/TasksPreloader/TasksPreloader";
 import {logoutTC} from "../features/Login/auth-reducer";
+import {fetchTodoListsSA} from "../features/TodoLists/todolists-reducer";
 
 type AppPropsT = {
   demo?: boolean;
@@ -47,7 +45,7 @@ function App({ demo = false }: AppPropsT) {
 
   useEffect(() => {
     if (demo) return;
-    dispatch(fetchTodoListsTC());
+    dispatch(fetchTodoListsSA());
   }, [dispatch]);
 
   const logoutHandler = useCallback(() => {

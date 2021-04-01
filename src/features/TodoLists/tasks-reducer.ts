@@ -28,7 +28,7 @@ import {
     handleServerAppError,
     handleServerNetworkError,
 } from "../../utils/error-utils";
-import {call, put, takeEvery, takeLeading} from "redux-saga/effects";
+import {call, put, takeEvery, select} from "redux-saga/effects";
 import {AxiosResponse} from "axios";
 
 // * types
@@ -77,7 +77,9 @@ export type UpdateDomainTaskModelT = {
 
 type SagasTasksActionsT = {
     FETCH_TASKS: "SAGA/TASKS/FETCH-TASKS",
-    DELETE_TASK: "SAGA/TASKS/DELETE-TASK"
+    DELETE_TASK: "SAGA/TASKS/DELETE-TASK",
+    CREATE_TASK: "SAGA/TASKS/CREATE-TASK",
+    UPDATE_TASK: "SAGA/TASKS/UPDATE-TASK",
 }
 
 // * reducer
@@ -93,7 +95,9 @@ enum TasksActionsTypes {
 
 export const sagasTasksActions: SagasTasksActionsT = {
     FETCH_TASKS: "SAGA/TASKS/FETCH-TASKS",
-    DELETE_TASK: "SAGA/TASKS/DELETE-TASK"
+    DELETE_TASK: "SAGA/TASKS/DELETE-TASK",
+    CREATE_TASK: "SAGA/TASKS/CREATE-TASK",
+    UPDATE_TASK: "SAGA/TASKS/UPDATE-TASK",
 }
 
 export const tasksReducer = (
@@ -232,6 +236,14 @@ export const setTaskLoadingStatusAC = (
 };
 
 // * Sagas
+
+export function* tasksWatcher() {
+    yield takeEvery(sagasTasksActions.FETCH_TASKS, fetchTasksWorker)
+    yield takeEvery(sagasTasksActions.DELETE_TASK, deleteTaskWorker)
+    yield takeEvery(sagasTasksActions.CREATE_TASK, createTask)
+    yield takeEvery(sagasTasksActions.UPDATE_TASK, updateTask)
+}
+
 export function* fetchTasksWorker(action: ReturnType<typeof fetchTasksSA>) {
     yield put(setAppStatusAC("loading"));
     yield put(changeTodoListEntityStatusAC(action.todoListId, "loading"));
@@ -244,9 +256,7 @@ export function* fetchTasksWorker(action: ReturnType<typeof fetchTasksSA>) {
         handleServerNetworkError(err, put)
     }
 }
-export function* fetchTasksWatcher() {
-    yield takeEvery(sagasTasksActions.FETCH_TASKS, fetchTasksWorker)
-}
+
 export const fetchTasksSA = (todoListId: string) => ({type: sagasTasksActions.FETCH_TASKS, todoListId} as const)
 
 export function* deleteTaskWorker(action: ReturnType<typeof deleteTaskSA>) {
@@ -259,67 +269,51 @@ export function* deleteTaskWorker(action: ReturnType<typeof deleteTaskSA>) {
         yield put(setAppStatusAC("succeeded"));
         yield put(setAppSuccessAC("Task was deleted!"));
     } catch (err) {
+        // handleServerNetworkError(err, dispatch)
         handleServerNetworkError(err, put)
     }
 }
 
-export function* deleteTaskWatcher() {
-    yield takeEvery(sagasTasksActions.DELETE_TASK, deleteTaskWorker)
+export const deleteTaskSA = (taskId: string, todoListId: string) => ({
+    type: sagasTasksActions.DELETE_TASK,
+    taskId,
+    todoListId
+} as const)
+
+export function* createTask(action: ReturnType<typeof createTaskSA>) {
+    const {todoListId, title} = action;
+    yield put(setAppStatusAC("loading"));
+    yield put(changeTodoListEntityStatusAC(todoListId, "loading"));
+    const res = yield call(todoListsAPI.createTask, todoListId, title)
+    try {
+        if (res.data.resultCode === 0) {
+            yield put(addTaskAC(res.data.data.item));
+            yield put(setAppStatusAC("succeeded"));
+            yield put(changeTodoListEntityStatusAC(todoListId, "succeeded"));
+            yield put(setAppSuccessAC("Task was added!"));
+        } else {
+            handleServerAppError(res.data, put);
+            yield put(changeTodoListEntityStatusAC(todoListId, "failed"));
+        }
+    } catch (err) {
+        handleServerNetworkError(err, put);
+        yield put(changeTodoListEntityStatusAC(todoListId, "failed"));
+    }
 }
 
-export const deleteTaskSA = (taskId: string, todoListId: string) => ({type: sagasTasksActions.DELETE_TASK, taskId, todoListId} as const)
+export const createTaskSA = (todoListId: string, title: string) => ({
+    type: sagasTasksActions.CREATE_TASK,
+    todoListId,
+    title
+} as const)
 
-//* Thunks
 
-// export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (
-//     dispatch
-// ) => {
-//     dispatch(setAppStatusAC("loading"));
-//     dispatch(setTaskLoadingStatusAC(taskId, todoListId, "loading"));
-//
-//     todoListsAPI
-//         .deleteTask(taskId, todoListId)
-//         .then(() => {
-//             dispatch(removeTaskAC(taskId, todoListId));
-//             dispatch(setAppStatusAC("succeeded"));
-//             dispatch(setAppSuccessAC("Task was deleted!"));
-//         })
-//         .catch((err) => handleServerNetworkError(err, dispatch));
-// };
-
-export const createTask = (todoListId: string, title: string): TasksThunkT => (
-    dispatch
-) => {
-    dispatch(setAppStatusAC("loading"));
-    dispatch(changeTodoListEntityStatusAC(todoListId, "loading"));
-    todoListsAPI
-        .createTask(todoListId, title)
-        .then((res) => {
-            if (res.data.resultCode === 0) {
-                dispatch(addTaskAC(res.data.data.item));
-                dispatch(setAppStatusAC("succeeded"));
-                dispatch(changeTodoListEntityStatusAC(todoListId, "succeeded"));
-                dispatch(setAppSuccessAC("Task was added!"));
-            } else {
-                handleServerAppError(res.data, dispatch);
-                dispatch(changeTodoListEntityStatusAC(todoListId, "failed"));
-            }
-        })
-        .catch((err) => {
-            handleServerNetworkError(err, dispatch);
-            dispatch(changeTodoListEntityStatusAC(todoListId, "failed"));
-        });
-};
-
-export const updateTask = (
-    taskId: string,
-    todoListId: string,
-    domainModel: UpdateDomainTaskModelT
-): TasksThunkT => (dispatch, getState) => {
-    const state = getState();
+export function* updateTask(action: ReturnType<typeof updateTaskSA> ) {
+    const {taskId, todoListId, domainModel} = action;
+    const state: AppRootStateT  = yield select((state: AppRootStateT) => state);
     const task = state.tasks[todoListId].find((t) => t.id === taskId);
 
-    dispatch(setTaskLoadingStatusAC(taskId, todoListId, "loading"));
+    yield put(setTaskLoadingStatusAC(taskId, todoListId, "loading"));
     if (!task) {
         throw new Error("Task no found in the STATE");
     }
@@ -334,16 +328,65 @@ export const updateTask = (
         ...domainModel,
     };
 
-    todoListsAPI
-        .updateTask(taskId, todoListId, apiModel)
-        .then((res) => {
-            if (res.data.resultCode === 0) {
-                dispatch(updateTaskAC(taskId, todoListId, domainModel));
-                dispatch(setAppSuccessAC("Task was updated!"));
-            } else {
-                handleServerAppError(res.data, dispatch);
-            }
-            dispatch(setTaskLoadingStatusAC(taskId, todoListId, "succeeded"));
-        })
-        .catch((err) => handleServerNetworkError(err, dispatch));
-};
+    const res = yield call(todoListsAPI.updateTask, taskId, todoListId, apiModel)
+    try {
+        if (res.data.resultCode === 0) {
+            yield put(updateTaskAC(taskId, todoListId, domainModel));
+            yield put(setAppSuccessAC("Task was updated!"));
+        } else {
+            handleServerAppError(res.data, put);
+        }
+        yield put(setTaskLoadingStatusAC(taskId, todoListId, "succeeded"));
+    } catch (err) {
+        handleServerNetworkError(err, put)
+    }
+}
+
+export const updateTaskSA = (taskId: string,
+                             todoListId: string,
+                             domainModel: UpdateDomainTaskModelT) => ({
+    type: sagasTasksActions.UPDATE_TASK,
+    todoListId,
+    taskId,
+    domainModel
+} as const)
+
+
+//* Thunks
+
+// export const updateTask = (
+//     taskId: string,
+//     todoListId: string,
+//     domainModel: UpdateDomainTaskModelT
+// ): TasksThunkT => (dispatch, getState) => {
+//     const state = getState();
+//     const task = state.tasks[todoListId].find((t) => t.id === taskId);
+//
+//     dispatch(setTaskLoadingStatusAC(taskId, todoListId, "loading"));
+//     if (!task) {
+//         throw new Error("Task no found in the STATE");
+//     }
+//
+//     const apiModel: UpdateTaskModelType = {
+//         title: task.title,
+//         description: task.description,
+//         status: task.status,
+//         priority: TaskPriorities.Low,
+//         startDate: task.startDate,
+//         deadline: task.deadline,
+//         ...domainModel,
+//     };
+//
+//     todoListsAPI
+//         .updateTask(taskId, todoListId, apiModel)
+//         .then((res) => {
+//             if (res.data.resultCode === 0) {
+//                 dispatch(updateTaskAC(taskId, todoListId, domainModel));
+//                 dispatch(setAppSuccessAC("Task was updated!"));
+//             } else {
+//                 handleServerAppError(res.data, dispatch);
+//             }
+//             dispatch(setTaskLoadingStatusAC(taskId, todoListId, "succeeded"));
+//         })
+//         .catch((err) => handleServerNetworkError(err, dispatch));
+// };

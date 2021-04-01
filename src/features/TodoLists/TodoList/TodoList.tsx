@@ -2,22 +2,21 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { Task } from "./Task/Task";
 import { AddItemForm } from "../../../components/AddItemForm/AddItemFrom";
 import { EditableSpan } from "../../../components/EditableSpan/EditableSpan";
-import { AppBar, IconButton } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import s from "../../../Common.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "../../../app/store";
-import {createTask, fetchTasksSA, TaskDomainT} from "../tasks-reducer";
+import { createTaskSA, fetchTasksSA, TaskDomainT} from "../tasks-reducer";
 import {
   changeTodolistFilterAC,
   deleteTodoList,
   TodolistDomainT,
   updateTodoList,
 } from "../todolists-reducer";
-import { TaskStatuses, TaskT } from "../../../api/todolists-api";
+import { TaskStatuses} from "../../../api/todolists-api";
 import { TasksPreloader } from "../../../components/TasksPreloader/TasksPreloader";
-import { StatusT } from "../../../app/app-reducer";
 
 type TodoListPropsType = {
   todoListId: string;
@@ -56,7 +55,7 @@ export const TodoList = React.memo(({ demo = false, isLoggedIn, ...props} : Todo
 
   const addTask = useCallback(
     (title: string) => {
-      dispatch(createTask(todoList.id, title));
+      dispatch(createTaskSA(todoList.id, title));
     },
     [dispatch, todoList.id]
   );

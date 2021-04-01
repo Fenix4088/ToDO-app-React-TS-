@@ -103,7 +103,7 @@ export const todoListsAPI = {
     );
   },
 
-  deleteTask(taskId: string, todoListId: string) {
+  deleteTask(taskId: string, todoListId: string):Promise<AxiosResponse<ResponseT>> {
     return instance.delete<ResponseT>(
       `todo-lists/${todoListId}/tasks/${taskId}`
     );

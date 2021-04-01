@@ -1,12 +1,12 @@
 import {combineReducers, createStore, applyMiddleware, Action} from "redux";
 import { todolistsReducer } from "../features/TodoLists/todolists-reducer";
-import {deleteTaskWatcher, fetchTasksWatcher, tasksReducer} from "../features/TodoLists/tasks-reducer";
+import {tasksReducer, tasksWatcher} from "../features/TodoLists/tasks-reducer";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk, {ThunkDispatch} from 'redux-thunk';
 import {appReducer, initializeAppWatcherSaga} from "./app-reducer";
 import {authReducer} from "../features/Login/auth-reducer";
 import createSagaMiddleware from 'redux-saga';
-import { all, takeEvery } from 'redux-saga/effects'
+import { all } from 'redux-saga/effects'
 
 const rootReducer = combineReducers({
   todoLists: todolistsReducer,
@@ -25,7 +25,7 @@ export const store = createStore(rootReducer, composeWithDevTools(applyMiddlewar
 sagaMiddleware.run(rootWatcher);
 
 function* rootWatcher() {
-  yield all([initializeAppWatcherSaga(), fetchTasksWatcher(), deleteTaskWatcher()])
+  yield all([initializeAppWatcherSaga(), tasksWatcher()])
 }
 
 

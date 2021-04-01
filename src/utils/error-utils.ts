@@ -5,8 +5,9 @@ import {
   setAppStatusAT,
 } from "../app/app-reducer";
 import { ResponseT } from "../api/todolists-api";
-import { Dispatch } from "redux";
+import {Action, Dispatch} from "redux";
 import { AppDispatchT } from "../app/store";
+import {PutEffect} from "@redux-saga/core/effects";
 
 export const handleServerAppError = <D>(
   data: ResponseT<D>,
@@ -20,10 +21,12 @@ export const handleServerAppError = <D>(
   dispatch(setAppStatusAC("failed"));
 };
 
+// <A extends Action>(action: A): PutEffect<A>
+
 export const handleServerNetworkError = (
   err: { message: string },
-  dispatch: AppDispatchT<SetAppErrorAT | setAppStatusAT>
+  put: AppDispatchT<SetAppErrorAT | setAppStatusAT>
 ): void => {
-  dispatch(setAppErrorAC(err.message ? err.message : "Unknown error!"));
-  dispatch(setAppStatusAC("failed"));
+  put(setAppErrorAC(err.message ? err.message : "Unknown error!"));
+  put(setAppStatusAC("failed"));
 };

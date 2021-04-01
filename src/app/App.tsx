@@ -17,7 +17,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "./store";
 import { CustomizedSnackbars } from "../components/ErrorSnackbar/ErrorSnackBar";
-import {initializeAppTC, StatusT} from "./app-reducer";
+import {initializeAppWatcherSaga, StatusT} from "./app-reducer";
 import { TodolistsList } from "../features/TodolistsList/TodolistLists";
 import { Login } from "../features/Login/Login";
 import {TasksPreloader} from "../components/TasksPreloader/TasksPreloader";
@@ -42,7 +42,7 @@ function App({ demo = false }: AppPropsT) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(initializeAppTC())
+    dispatch({type: "APP/INIT_APP_SAGA"})
   }, [])
 
   useEffect(() => {

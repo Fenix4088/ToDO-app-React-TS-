@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 
 // * types
 export type TodolistT = {
@@ -50,7 +50,7 @@ export type UpdateTaskModelType = {
   deadline: string;
 };
 
-type GetTasksResponse = {
+export type GetTasksResponse = {
   error: string | null;
   totalCount: number;
   items: Array<TaskT>;
@@ -90,7 +90,7 @@ export const todoListsAPI = {
     });
   },
 
-  getTasks(todoListId: string) {
+  getTasks(todoListId: string):Promise<AxiosResponse<GetTasksResponse>> {
     return instance.get<GetTasksResponse>(`todo-lists/${todoListId}/tasks`);
   },
 

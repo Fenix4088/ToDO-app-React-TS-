@@ -113,7 +113,7 @@ export const setAppInitializedAC = (value: boolean) => {
     } as const;
 };
 
-// * SAGAs
+// * SAGA
 
 function* initializeAppWorkerSaga() {
     const res = yield call(authAPI.me)

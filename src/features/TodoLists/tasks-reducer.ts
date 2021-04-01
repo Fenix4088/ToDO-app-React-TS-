@@ -76,7 +76,8 @@ export type UpdateDomainTaskModelT = {
 };
 
 type SagasTasksActionsT = {
-    FETCH_TASKS: "TASKS/FETCH-TASKS"
+    FETCH_TASKS: "SAGA/TASKS/FETCH-TASKS",
+    DELETE_TASK: "SAGA/TASKS/DELETE-TASK"
 }
 
 // * reducer
@@ -91,7 +92,8 @@ enum TasksActionsTypes {
 }
 
 export const sagasTasksActions: SagasTasksActionsT = {
-    FETCH_TASKS: "TASKS/FETCH-TASKS"
+    FETCH_TASKS: "SAGA/TASKS/FETCH-TASKS",
+    DELETE_TASK: "SAGA/TASKS/DELETE-TASK"
 }
 
 export const tasksReducer = (
@@ -230,11 +232,10 @@ export const setTaskLoadingStatusAC = (
 };
 
 // * Sagas
-export function* fetchTasksWorkerSaga(action: any) {
+export function* fetchTasksWorker(action: ReturnType<typeof fetchTasksSA>) {
     yield put(setAppStatusAC("loading"));
     yield put(changeTodoListEntityStatusAC(action.todoListId, "loading"));
     const res: AxiosResponse<GetTasksResponse> = yield call(todoListsAPI.getTasks, action.todoListId)
-    console.log(res)
     try {
         yield put(setTasksAC(action.todoListId, res.data.items));
         yield put(setAppStatusAC("succeeded"));
@@ -243,40 +244,48 @@ export function* fetchTasksWorkerSaga(action: any) {
         handleServerNetworkError(err, put)
     }
 }
-
 export function* fetchTasksWatcher() {
-    yield takeEvery( sagasTasksActions.FETCH_TASKS, fetchTasksWorkerSaga)
+    yield takeEvery(sagasTasksActions.FETCH_TASKS, fetchTasksWorker)
+}
+export const fetchTasksSA = (todoListId: string) => ({type: sagasTasksActions.FETCH_TASKS, todoListId} as const)
+
+export function* deleteTaskWorker(action: ReturnType<typeof deleteTaskSA>) {
+    yield put(setAppStatusAC("loading"));
+    yield put(setTaskLoadingStatusAC(action.taskId, action.todoListId, "loading"));
+
+    yield call(todoListsAPI.deleteTask, action.taskId, action.todoListId)
+    try {
+        yield put(removeTaskAC(action.taskId, action.todoListId));
+        yield put(setAppStatusAC("succeeded"));
+        yield put(setAppSuccessAC("Task was deleted!"));
+    } catch (err) {
+        handleServerNetworkError(err, put)
+    }
 }
 
+export function* deleteTaskWatcher() {
+    yield takeEvery(sagasTasksActions.DELETE_TASK, deleteTaskWorker)
+}
+
+export const deleteTaskSA = (taskId: string, todoListId: string) => ({type: sagasTasksActions.DELETE_TASK, taskId, todoListId} as const)
+
 //* Thunks
-// export const fetchTasks = (todoListId: string): TasksThunkT => (dispatch) => {
-//   dispatch(setAppStatusAC("loading"));
-//   dispatch(changeTodoListEntityStatusAC(todoListId, "loading"));
-//   todoListsAPI
-//     .getTasks(todoListId)
-//     .then((res) => {
-//       dispatch(setTasksAC(todoListId, res.data.items));
-//       dispatch(setAppStatusAC("succeeded"));
-//       dispatch(changeTodoListEntityStatusAC(todoListId, "succeeded"));
-//     })
-//     .catch((err) => handleServerNetworkError(err, dispatch));
+
+// export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (
+//     dispatch
+// ) => {
+//     dispatch(setAppStatusAC("loading"));
+//     dispatch(setTaskLoadingStatusAC(taskId, todoListId, "loading"));
+//
+//     todoListsAPI
+//         .deleteTask(taskId, todoListId)
+//         .then(() => {
+//             dispatch(removeTaskAC(taskId, todoListId));
+//             dispatch(setAppStatusAC("succeeded"));
+//             dispatch(setAppSuccessAC("Task was deleted!"));
+//         })
+//         .catch((err) => handleServerNetworkError(err, dispatch));
 // };
-
-export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (
-    dispatch
-) => {
-    dispatch(setAppStatusAC("loading"));
-    dispatch(setTaskLoadingStatusAC(taskId, todoListId, "loading"));
-
-    todoListsAPI
-        .deleteTask(taskId, todoListId)
-        .then(() => {
-            dispatch(removeTaskAC(taskId, todoListId));
-            dispatch(setAppStatusAC("succeeded"));
-            dispatch(setAppSuccessAC("Task was deleted!"));
-        })
-        .catch((err) => handleServerNetworkError(err, dispatch));
-};
 
 export const createTask = (todoListId: string, title: string): TasksThunkT => (
     dispatch

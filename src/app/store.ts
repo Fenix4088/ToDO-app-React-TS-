@@ -1,6 +1,6 @@
 import {combineReducers, createStore, applyMiddleware, Action} from "redux";
 import { todolistsReducer } from "../features/TodoLists/todolists-reducer";
-import {fetchTasksWatcher, tasksReducer} from "../features/TodoLists/tasks-reducer";
+import {deleteTaskWatcher, fetchTasksWatcher, tasksReducer} from "../features/TodoLists/tasks-reducer";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk, {ThunkDispatch} from 'redux-thunk';
 import {appReducer, initializeAppWatcherSaga} from "./app-reducer";
@@ -25,7 +25,7 @@ export const store = createStore(rootReducer, composeWithDevTools(applyMiddlewar
 sagaMiddleware.run(rootWatcher);
 
 function* rootWatcher() {
-  yield all([initializeAppWatcherSaga(), fetchTasksWatcher()])
+  yield all([initializeAppWatcherSaga(), fetchTasksWatcher(), deleteTaskWatcher()])
 }
 
 

@@ -8,7 +8,7 @@ import Button from "@material-ui/core/Button";
 import s from "../../../Common.module.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { AppRootStateT } from "../../../app/store";
-import {createTask, TaskDomainT} from "../tasks-reducer";
+import {createTask, fetchTasksSA, TaskDomainT} from "../tasks-reducer";
 import {
   changeTodolistFilterAC,
   deleteTodoList,
@@ -39,7 +39,7 @@ export const TodoList = React.memo(({ demo = false, isLoggedIn, ...props} : Todo
   useEffect(() => {
     if(demo) return;
 
-    dispatch({type: "TASKS/FETCH-TASKS", todoListId: todoList.id});
+    dispatch(fetchTasksSA(todoList.id));
 
   }, [dispatch, todoList.id]);
 

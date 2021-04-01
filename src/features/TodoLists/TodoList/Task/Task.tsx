@@ -3,7 +3,7 @@ import { EditableSpan } from "../../../../components/EditableSpan/EditableSpan";
 import { Box, Checkbox, IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { deleteTask, TaskDomainT, updateTask } from "../../tasks-reducer";
+import {deleteTaskSA, TaskDomainT, updateTask} from "../../tasks-reducer";
 import { useDispatch } from "react-redux";
 import { TaskStatuses } from "../../../../api/todolists-api";
 import { TasksPreloader } from "../../../../components/TasksPreloader/TasksPreloader";
@@ -28,7 +28,7 @@ export const Task: React.FC<TodoListItemType> = React.memo((props) => {
   const classes = useStyles();
 
   const removeTask = useCallback(() => {
-    dispatch(deleteTask(task.id, todoListId));
+    dispatch(deleteTaskSA(task.id, todoListId));
   }, [dispatch, todoListId, task.id]);
 
   const changeTaskStatus = useCallback(

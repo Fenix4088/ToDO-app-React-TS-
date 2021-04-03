@@ -1,7 +1,6 @@
 import {
   AddTodolistAT,
   changeTodoListEntityStatusAC,
-  changeTodoListEntityStatusAT,
   RemoveTodolistAT,
   SetTodoListsAT,
   TodolistsActionTypes,
@@ -16,11 +15,8 @@ import {
 import { ThunkAction } from "redux-thunk";
 import { AppRootStateT } from "../../app/store";
 import {
-  SetAppErrorAT,
   setAppStatusAC,
-  setAppStatusAT,
   setAppSuccessAC,
-  setAppSuccessAT,
   StatusT,
 } from "../../app/app-reducer";
 import {
@@ -57,11 +53,7 @@ export type TasksThunkT<ReturnType = void> = ThunkAction<
   ReturnType,
   AppRootStateT,
   unknown,
-  | ActionsT
-  | SetAppErrorAT
-  | setAppStatusAT
-  | changeTodoListEntityStatusAT
-  | setAppSuccessAT
+  any
 >;
 
 export type TaskStateT = {
@@ -221,13 +213,13 @@ export const setTaskLoadingStatusAC = (
 
 //* Thunks
 export const fetchTasks = (todoListId: string): TasksThunkT => (dispatch) => {
-  dispatch(setAppStatusAC("loading"));
+  dispatch(setAppStatusAC({status: "loading"}));
   dispatch(changeTodoListEntityStatusAC(todoListId, "loading"));
   todoListsAPI
     .getTasks(todoListId)
     .then((res) => {
       dispatch(setTasksAC(todoListId, res.data.items));
-      dispatch(setAppStatusAC("succeeded"));
+      dispatch(setAppStatusAC({status: "succeeded"}));
       dispatch(changeTodoListEntityStatusAC(todoListId, "succeeded"));
     })
     .catch((err) => handleServerNetworkError(err, dispatch));
@@ -236,15 +228,15 @@ export const fetchTasks = (todoListId: string): TasksThunkT => (dispatch) => {
 export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (
   dispatch
 ) => {
-  dispatch(setAppStatusAC("loading"));
+  dispatch(setAppStatusAC({status: "loading"}));
   dispatch(setTaskLoadingStatusAC(taskId, todoListId, "loading"));
 
   todoListsAPI
     .deleteTask(taskId, todoListId)
     .then(() => {
       dispatch(removeTaskAC(taskId, todoListId));
-      dispatch(setAppStatusAC("succeeded"));
-      dispatch(setAppSuccessAC("Task was deleted!"));
+      dispatch(setAppStatusAC({status: "succeeded"}));
+      dispatch(setAppSuccessAC({success: "Task was deleted!"}));
     })
     .catch((err) => handleServerNetworkError(err, dispatch));
 };
@@ -252,16 +244,16 @@ export const deleteTask = (taskId: string, todoListId: string): TasksThunkT => (
 export const createTask = (todoListId: string, title: string): TasksThunkT => (
   dispatch
 ) => {
-  dispatch(setAppStatusAC("loading"));
+  dispatch(setAppStatusAC({status: "loading"}));
   dispatch(changeTodoListEntityStatusAC(todoListId, "loading"));
   todoListsAPI
     .createTask(todoListId, title)
     .then((res) => {
       if (res.data.resultCode === 0) {
         dispatch(addTaskAC(res.data.data.item));
-        dispatch(setAppStatusAC("succeeded"));
+        dispatch(setAppStatusAC({status: "succeeded"}));
         dispatch(changeTodoListEntityStatusAC(todoListId, "succeeded"));
-        dispatch(setAppSuccessAC("Task was added!"));
+        dispatch(setAppSuccessAC({success: "Task was added!"}));
       } else {
         handleServerAppError(res.data, dispatch);
         dispatch(changeTodoListEntityStatusAC(todoListId, "failed"));
@@ -301,7 +293,7 @@ export const updateTask = (
     .then((res) => {
       if (res.data.resultCode === 0) {
         dispatch(updateTaskAC(taskId, todoListId, domainModel));
-        dispatch(setAppSuccessAC("Task was updated!"));
+        dispatch(setAppSuccessAC({success: "Task was updated!"}));
       } else {
         handleServerAppError(res.data, dispatch);
       }

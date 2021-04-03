@@ -1,29 +1,26 @@
 import {
   setAppErrorAC,
-  SetAppErrorAT,
   setAppStatusAC,
-  setAppStatusAT,
 } from "../app/app-reducer";
 import { ResponseT } from "../api/todolists-api";
 import { Dispatch } from "redux";
-import { AppDispatchT } from "../app/store";
 
 export const handleServerAppError = <D>(
   data: ResponseT<D>,
-  dispatch: AppDispatchT<SetAppErrorAT | setAppStatusAT>
+  dispatch: Dispatch
 ): void => {
   if (data.messages[0]) {
-    dispatch(setAppErrorAC(data.messages[0]));
+    dispatch(setAppErrorAC({error: data.messages[0]}));
   } else {
-    dispatch(setAppErrorAC("Unknown error :-("));
+    dispatch(setAppErrorAC({error: "Unknown error :-("}));
   }
-  dispatch(setAppStatusAC("failed"));
+  dispatch(setAppStatusAC({status: "failed"}));
 };
 
 export const handleServerNetworkError = (
   err: { message: string },
-  dispatch: AppDispatchT<SetAppErrorAT | setAppStatusAT>
+  dispatch: Dispatch
 ): void => {
-  dispatch(setAppErrorAC(err.message ? err.message : "Unknown error!"));
-  dispatch(setAppStatusAC("failed"));
+  dispatch(setAppErrorAC({error: err.message ? err.message : "Unknown error!"}));
+  dispatch(setAppStatusAC({status: "failed"}));
 };

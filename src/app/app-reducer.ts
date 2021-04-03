@@ -1,8 +1,9 @@
 // * types
-import {ThunkAction} from "redux-thunk";
-import {AppRootStateT} from "./store";
-import {authAPI} from "../api/todolists-api";
-import {setIsLoggedInAC, setIsLoggedInAT} from "../features/Login/auth-reducer";
+import { ThunkAction } from "redux-thunk";
+import { AppRootStateT } from "./store";
+import { authAPI } from "../api/todolists-api";
+import { setIsLoggedInAC } from "../features/Login/auth-reducer";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type InitialStateT = {
   status: StatusT;
@@ -17,26 +18,12 @@ export type appActionStatusT = {
 
 export type StatusT = "idle" | "loading" | "succeeded" | "failed";
 
-enum appActionsConst {
-  APP_SET_STATUS = "APP/SET-STATUS",
-  APP_SET_ERROR = "APP/SET-ERROR",
-  APP_SET_SUCCESS = "APP/SET-SUCCESS",
-  SET_APP_INITIALIZED = "APP/SET-APP-INITIALIZED",
-}
-
 export type AppReducerThunkT<ReturnType = void> = ThunkAction<
-    ReturnType,
-    AppRootStateT,
-    unknown,
-    ActionsT | setIsLoggedInAT
-    >;
-
-type ActionsT = SetAppErrorAT | setAppStatusAT | setAppSuccessAT | setAppInitializedAT;
-
-export type SetAppErrorAT = ReturnType<typeof setAppErrorAC>;
-export type setAppStatusAT = ReturnType<typeof setAppStatusAC>;
-export type setAppSuccessAT = ReturnType<typeof setAppSuccessAC>;
-export type setAppInitializedAT = ReturnType<typeof setAppInitializedAC>;
+  ReturnType,
+  AppRootStateT,
+  unknown,
+  any
+>;
 
 // * reducer
 const initialState: InitialStateT = {
@@ -49,83 +36,44 @@ const initialState: InitialStateT = {
   },
 };
 
-export const appReducer = (
-  state: InitialStateT = initialState,
-  action: ActionsT
-): InitialStateT => {
-  const { APP_SET_STATUS, APP_SET_ERROR, APP_SET_SUCCESS, SET_APP_INITIALIZED} = appActionsConst;
+const slice = createSlice({
+  name: "app",
+  initialState: initialState,
+  reducers: {
+    setAppErrorAC(state, action: PayloadAction<{ error: string | null }>) {
+      state.appActionStatus.error = action.payload.error;
+      state.appActionStatus.success = null;
+    },
+    setAppSuccessAC(state, action: PayloadAction<{ success: string | null }>) {
+      state.appActionStatus.success = action.payload.success;
+      state.appActionStatus.error = null;
+    },
+    setAppInitializedAC(state, action: PayloadAction<{ value: boolean }>) {
+      state.isInitialized = action.payload.value;
+    },
+    setAppStatusAC(state, action: PayloadAction<{ status: StatusT }>) {
+      state.status = action.payload.status;
+    },
+  },
+});
 
-  switch (action.type) {
-    case APP_SET_STATUS: {
-      return { ...state, status: action.status };
-    }
-    case APP_SET_ERROR: {
-      return {
-        ...state,
-        appActionStatus: {
-          ...state.appActionStatus,
-          error: action.error,
-          success: null,
-        },
-      };
-    }
-    case APP_SET_SUCCESS: {
-      return {
-        ...state,
-        appActionStatus: {
-          ...state.appActionStatus,
-          error: null,
-          success: action.success,
-        },
-      };
-    }
-    case SET_APP_INITIALIZED: {
-      return {...state, isInitialized: action.value}
-    }
-    default:
-      return state;
-  }
-};
+export const appReducer = slice.reducer;
+export const {
+  setAppErrorAC,
+  setAppSuccessAC,
+  setAppInitializedAC,
+  setAppStatusAC
+} = slice.actions;
 
-// * AC
-export const setAppErrorAC = (error: string | null) => {
-  return {
-    type: appActionsConst.APP_SET_ERROR,
-    error,
-  } as const;
-};
-export const setAppStatusAC = (status: StatusT) => {
-  return {
-    type: appActionsConst.APP_SET_STATUS,
-    status,
-  } as const;
-};
-export const setAppSuccessAC = (success: string | null) => {
-  return {
-    type: appActionsConst.APP_SET_SUCCESS,
-    success,
-  } as const;
-};
-export const setAppInitializedAC = (value: boolean) => {
-  return {
-    type: appActionsConst.SET_APP_INITIALIZED,
-    value,
-  } as const;
-};
 
 // * TC
-
 export const initializeAppTC = (): AppReducerThunkT => (dispatch) => {
-  authAPI.me()
-      .then(res => {
-        if(res.data.resultCode === 0) {
-          dispatch(setIsLoggedInAC(true));
-        } else {
+  authAPI.me().then((res) => {
+    if (res.data.resultCode === 0) {
+      dispatch(setIsLoggedInAC({ value: true }));
+    } else {
+    }
 
-        }
-
-        dispatch(setAppInitializedAC(true));
-
-
-      })
-}
+    dispatch(setAppInitializedAC({ value: true }));
+  });
+};

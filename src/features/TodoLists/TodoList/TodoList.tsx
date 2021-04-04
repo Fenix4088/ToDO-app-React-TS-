@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { Task } from "./Task/Task";
 import { AddItemForm } from "../../../components/AddItemForm/AddItemFrom";
 import { EditableSpan } from "../../../components/EditableSpan/EditableSpan";
-import { AppBar, IconButton } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import s from "../../../Common.module.scss";
@@ -15,9 +15,8 @@ import {
   TodolistDomainT,
   updateTodoList,
 } from "../todolists-reducer";
-import { TaskStatuses, TaskT } from "../../../api/todolists-api";
+import { TaskStatuses } from "../../../api/todolists-api";
 import { TasksPreloader } from "../../../components/TasksPreloader/TasksPreloader";
-import { StatusT } from "../../../app/app-reducer";
 
 type TodoListPropsType = {
   todoListId: string;
@@ -62,15 +61,15 @@ export const TodoList = React.memo(({ demo = false, isLoggedIn, ...props} : Todo
   );
 
   const onAllClickHandler = useCallback(() => {
-    dispatch(changeTodolistFilterAC("all", todoList.id));
+    dispatch(changeTodolistFilterAC({filter: "all", id: todoList.id}));
   }, [dispatch, todoList.id]);
 
   const onActiveClickHandler = useCallback(() => {
-    dispatch(changeTodolistFilterAC("active", todoList.id));
+    dispatch(changeTodolistFilterAC({filter: "active", id: todoList.id}));
   }, [dispatch, todoList.id]);
 
   const onCompletedClickHandler = useCallback(() => {
-    dispatch(changeTodolistFilterAC("completed", todoList.id));
+    dispatch(changeTodolistFilterAC({filter: "completed", id: todoList.id}));
   }, [dispatch, todoList.id]);
 
   const removeTodoList = useCallback((): void => {

@@ -5,6 +5,7 @@ let startState: InitialStateT;
 beforeEach(function () {
     startState = {
         status: "idle",
+        isInitialized: false,
         appActionStatus: {
             error: null,
             success: null,
@@ -13,7 +14,7 @@ beforeEach(function () {
 });
 
 test("should set error", () => {
-    const action = setAppErrorAC("Error");
+    const action = setAppErrorAC({error: "Error"});
     const endState = appReducer(startState, action);
 
     expect(endState !== startState).toBeTruthy();
@@ -22,7 +23,7 @@ test("should set error", () => {
 });
 
 test("should set success", () => {
-    const action = setAppSuccessAC("Success");
+    const action = setAppSuccessAC({success: "Success"});
     const endState = appReducer(startState, action);
 
     expect(endState !== startState).toBeTruthy();
@@ -31,7 +32,7 @@ test("should set success", () => {
 });
 
 test("should set status", () => {
-    const action = setAppStatusAC("loading");
+    const action = setAppStatusAC({status: "loading"});
     const endState = appReducer(startState, action);
 
     expect(endState !== startState).toBeTruthy();

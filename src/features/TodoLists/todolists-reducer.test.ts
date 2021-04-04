@@ -32,7 +32,10 @@ beforeEach(function () {
 });
 
 test("todolist should be remove", () => {
-  const endState = todolistsReducer(startState, removeTodolistAC(todoListId1));
+  const endState = todolistsReducer(
+    startState,
+    removeTodolistAC({ todoListId: todoListId1 })
+  );
 
   expect(endState.length).toBe(1);
   expect(endState[0].id).toBe(todoListId2);
@@ -46,10 +49,7 @@ test("todolist should be added", () => {
     order: 7,
   };
 
-  const endState = todolistsReducer(
-    startState,
-    addTodolistAC(newTodoList)
-  );
+  const endState = todolistsReducer(startState, addTodolistAC({ todoList: newTodoList }));
 
   expect(endState.length).toBe(3);
   expect(endState[0].title).toBe(newTodoList.title);
@@ -61,7 +61,7 @@ test("todolist should changed its name", () => {
 
   const endState = todolistsReducer(
     startState,
-    changeTodolistTitleAC(todoListId2, newTodoListTitle)
+    changeTodolistTitleAC({ id: todoListId2, title: newTodoListTitle })
   );
 
 
@@ -75,7 +75,7 @@ test("todolist should changed filter name", () => {
 
   const endState = todolistsReducer(
     startState,
-    changeTodolistFilterAC(newFilter, todoListId2)
+    changeTodolistFilterAC({ filter: newFilter, id: todoListId2 })
   );
 
   expect(endState[0].filter).toBe("all");
@@ -86,7 +86,7 @@ test("todolist should changed filter name", () => {
 
 test("todoLists should be set", () => {
 
-  const action = setTodoListsAC(startState);
+  const action = setTodoListsAC({ todoLists: startState });
   const endState = todolistsReducer([], action);
 
   expect(endState.length).toBe(2);
@@ -95,7 +95,7 @@ test("todoLists should be set", () => {
 
 test("should change TodoList entity status", () => {
 
-  const action = changeTodoListEntityStatusAC(todoListId2, "loading");
+  const action = changeTodoListEntityStatusAC({todoListId: todoListId2, entityStatus: "loading"});
   const endState = todolistsReducer(startState, action);
 
   expect(endState[1] === startState[1]).toBeFalsy();

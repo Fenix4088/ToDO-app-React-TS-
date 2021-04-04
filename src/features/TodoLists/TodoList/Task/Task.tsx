@@ -28,7 +28,7 @@ export const Task: React.FC<TodoListItemType> = React.memo((props) => {
   const classes = useStyles();
 
   const removeTask = useCallback(() => {
-    dispatch(deleteTask(task.id, todoListId));
+    dispatch(deleteTask({taskId: task.id, todoListId}))
   }, [dispatch, todoListId, task.id]);
 
   const changeTaskStatus = useCallback(

@@ -1,10 +1,9 @@
 import {
   addTaskAC,
   updateTaskAC,
-  removeTaskAC,
   tasksReducer,
   TaskStateT,
-  setTaskLoadingStatusAC, fetchTasks,
+  setTaskLoadingStatusAC, fetchTasks, deleteTask,
 } from "./tasks-reducer";
 import {
   addTodolistAC,
@@ -106,7 +105,7 @@ beforeEach(function () {
 });
 
 test("correct task should be deleted from correct array", () => {
-  const action = removeTaskAC({ taskId: "2", todoListId: todoListId2 });
+  const action = deleteTask.fulfilled({ taskId: "2", todoListId: todoListId2 }, "",  { taskId: "2", todoListId: todoListId2 });
   const endState = tasksReducer(startState, action);
 
   expect(startState[todoListId2].length).toBe(3);

@@ -10,7 +10,7 @@ import { appReducer } from "../app/app-reducer";
 import thunk from "redux-thunk";
 import { authReducer } from "../features/Login/auth-reducer";
 import {configureStore} from "@reduxjs/toolkit";
-import {BrowserRouter, HashRouter} from "react-router-dom";
+import { HashRouter} from "react-router-dom";
 
 const rootReducer: RootReducerT = combineReducers({
   tasks: tasksReducer,
@@ -113,10 +113,7 @@ export const storyBookStore = configureStore( {
   reducer: rootReducer,
   preloadedState: initialGlobalState as AppRootStateT,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(thunk)
-}
-  ,
-
-);
+});
 
 export const ReduxStoreProviderDecorator = (storyFn: any) => (
   <Provider store={storyBookStore}>{storyFn()}</Provider>

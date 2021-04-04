@@ -12,13 +12,9 @@ const rootReducer = combineReducers({
   app: appReducer,
   login: authReducer,
 });
+export type RootReducerT = typeof rootReducer;
+export type AppRootStateT = ReturnType<RootReducerT>;
 
-export type AppRootStateT = ReturnType<typeof rootReducer>;
-export type AppDispatchT<AT extends Action> = ThunkDispatch<
-  AppRootStateT,
-  unknown,
-  AT
->;
 
 export const store = configureStore({
   reducer: rootReducer,

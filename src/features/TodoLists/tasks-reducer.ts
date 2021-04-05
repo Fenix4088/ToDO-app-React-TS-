@@ -1,10 +1,28 @@
-import {addTodolistAC, changeTodoListEntityStatusAC, removeTodolistAC, setTodoListsAC,} from "./todolists-reducer";
-import {TaskPriorities, TaskStatuses, TaskT, todoListsAPI, UpdateTaskModelType,} from "../../api/todolists-api";
-import {ThunkAction} from "redux-thunk";
-import {AppRootStateT} from "../../app/store";
-import {setAppStatusAC, setAppSuccessAC, StatusT,} from "../../app/app-reducer";
-import {handleServerAppError, handleServerNetworkError,} from "../../utils/error-utils";
-import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {
+  addTodolistAC,
+  changeTodoListEntityStatusAC,
+  removeTodolistAC,
+  setTodoListsAC,
+} from "./todolists-reducer";
+import {
+  TaskPriorities,
+  TaskStatuses,
+  TaskT,
+  todoListsAPI,
+  UpdateTaskModelType,
+} from "../../api/todolists-api";
+import { ThunkAction } from "redux-thunk";
+import { AppRootStateT } from "../../app/store";
+import {
+  setAppStatusAC,
+  setAppSuccessAC,
+  StatusT,
+} from "../../app/app-reducer";
+import {
+  handleServerAppError,
+  handleServerNetworkError,
+} from "../../utils/error-utils";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // * types
 export type TasksThunkT<ReturnType = void> = ThunkAction<
@@ -33,29 +51,31 @@ export type UpdateDomainTaskModelT = {
 
 //* Thunks
 
-export const fetchTasks = createAsyncThunk("tasks/fetchTasks", (todoListId: string, thunkAPI) => {
-  const {dispatch} = thunkAPI;
+export const fetchTasks = createAsyncThunk(
+  "tasks/fetchTasks",
+  async (todoListId: string, thunkAPI) => {
+    const { dispatch } = thunkAPI;
 
-  dispatch(setAppStatusAC({ status: "loading" }));
-  dispatch(
+    dispatch(setAppStatusAC({ status: "loading" }));
+    dispatch(
       changeTodoListEntityStatusAC({ todoListId, entityStatus: "loading" })
-  );
-  return todoListsAPI
-      .getTasks(todoListId)
-      .then((res) => {
-        dispatch(setAppStatusAC({ status: "succeeded" }));
-        dispatch(
-            changeTodoListEntityStatusAC({ todoListId, entityStatus: "succeeded" })
-        );
-        return { todoListId, tasks: res.data.items };
-      })
-})
+    );
+
+    const res = await todoListsAPI.getTasks(todoListId);
+
+    dispatch(setAppStatusAC({ status: "succeeded" }));
+    dispatch(
+      changeTodoListEntityStatusAC({ todoListId, entityStatus: "succeeded" })
+    );
+    return { todoListId, tasks: res.data.items };
+  }
+);
 
 export const deleteTask = createAsyncThunk(
   "tasks/deleteTask",
-  (payload: { taskId: string, todoListId: string }, thunkAPI) => {
-    const {dispatch} = thunkAPI
-    const {taskId, todoListId} = payload;
+  async (payload: { taskId: string; todoListId: string }, thunkAPI) => {
+    const { dispatch } = thunkAPI;
+    const { taskId, todoListId } = payload;
     dispatch(setAppStatusAC({ status: "loading" }));
     dispatch(
       setTaskLoadingStatusAC({
@@ -65,14 +85,13 @@ export const deleteTask = createAsyncThunk(
       })
     );
 
-    return todoListsAPI
-      .deleteTask(taskId, todoListId)
-      .then(() => {
-        dispatch(setAppStatusAC({ status: "succeeded" }));
-        dispatch(setAppSuccessAC({ success: "Task was deleted!" }));
-        return { taskId, todoListId }
-      })
-      /*.catch((err) => handleServerNetworkError(err, dispatch));*/
+    const res = await todoListsAPI.deleteTask(taskId, todoListId);
+
+    dispatch(setAppStatusAC({ status: "succeeded" }));
+    dispatch(setAppSuccessAC({ success: "Task was deleted!" }));
+    return { taskId, todoListId };
+
+    /*.catch((err) => handleServerNetworkError(err, dispatch));*/
   }
 );
 // * reducer
@@ -154,7 +173,6 @@ export const {
 } = slice.actions;
 
 //* Thunks
-
 
 export const createTask = (todoListId: string, title: string): TasksThunkT => (
   dispatch

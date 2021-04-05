@@ -8,9 +8,12 @@ export type TodolistT = {
   order: number;
 };
 
+export type FieldErrorT = { field: string; error: string };
+
 export type ResponseT<D = {}> = {
   resultCode: number;
   messages: Array<string>;
+  fieldsError?: Array<FieldErrorT>;
   data: D;
 };
 

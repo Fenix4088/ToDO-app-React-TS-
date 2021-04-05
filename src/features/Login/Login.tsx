@@ -1,22 +1,30 @@
-import React from "react"
+import React from "react";
 import {
-    Button,
-    Checkbox,
-    FormControl,
-    FormControlLabel,
-    FormGroup,
-    FormLabel,
-    Grid,
-    TextField
+  Button,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+  Grid,
+  TextField,
 } from "@material-ui/core";
-import {useFormik} from "formik";
-import {loginTC} from "./auth-reducer";
-import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateT} from "../../app/store";
+import { FormikHelpers, useFormik } from "formik";
+import { loginTC } from "./auth-reducer";
+import { useSelector } from "react-redux";
+import { AppRootStateT, useAppDispatch } from "../../app/store";
 import { Redirect } from "react-router";
 
+type FormValuesT = {
+    email: string,
+    password: string,
+    rememberMe: boolean
+}
+
+
 export const Login = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
+
     const isLoggedIn = useSelector<AppRootStateT, boolean>(state => state.login.isLoggedIn);
     const formik = useFormik({
         validate: (values) => {
@@ -38,8 +46,17 @@ export const Login = () => {
             password: "",
             rememberMe: false
         },
-        onSubmit: values => {
-            dispatch(loginTC(values))
+        onSubmit: async (values: FormValuesT, formikHelpers: FormikHelpers<FormValuesT>) => {
+            const action = await dispatch(loginTC(values));
+            debugger;
+            if(loginTC.rejected.match(action)) {
+                if(action.payload?.fieldsErrors) {
+                    const error = action.payload.fieldsErrors[0]
+                    formikHelpers.setFieldError(error.field, error.error)
+
+                }
+
+            }
         },
     });
 
